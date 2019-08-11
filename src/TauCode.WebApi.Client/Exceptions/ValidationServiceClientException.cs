@@ -3,9 +3,9 @@
 namespace TauCode.WebApi.Client.Exceptions
 {
     [Serializable]
-    public class ServiceRequestValidationException : ServiceClientException
+    public class ValidationServiceClientException : ServiceClientException
     {
-        public ServiceRequestValidationException(ValidationErrorDto validationErrorResponse)
+        public ValidationServiceClientException(ValidationErrorDto validationErrorResponse)
             : base(validationErrorResponse.Code, validationErrorResponse.Message)
         {
             this.ValidationErrorResponse = validationErrorResponse;

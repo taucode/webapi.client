@@ -1,3 +1,8 @@
 2019-07-23
 ==========
     1. Ported to .NET Standard.
+
+2019-08-12
+==========
+    Version: 2.19.1-dev-0812-0152
+    1. Added extensions.
