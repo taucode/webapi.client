@@ -1,0 +1,4 @@
+2019-08-15
+==========
+    1. Get rid of comments in ServiceClientExtensions.cs
+

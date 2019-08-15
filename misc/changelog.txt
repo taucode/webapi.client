@@ -6,3 +6,8 @@
 ==========
     Version: 2.19.1-dev-0812-0152
     1. Added extensions.
+
+2019-08-15
+==========
+    Version: 2.19.1-dev-0815-1201
+    1. Added methods to ServiceClientExtensions.
