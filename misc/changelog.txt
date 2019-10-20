@@ -11,3 +11,8 @@
 ==========
     Version: 2.19.1-dev-0815-1201
     1. Added methods to ServiceClientExtensions.
+
+2019-10-21
+==========
+    Version: v3.0
+    1. Release v3.0.
