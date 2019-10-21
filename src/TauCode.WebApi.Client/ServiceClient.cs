@@ -13,17 +13,11 @@ namespace TauCode.WebApi.Client
 {
     public class ServiceClient : IServiceClient
     {
-        #region Fields
-
-        private readonly HttpClient _httpClient;
-
-        #endregion
-
         #region Constructor
 
         public ServiceClient(HttpClient httpClient)
         {
-            _httpClient = httpClient;
+            this.HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         #endregion
@@ -99,7 +93,7 @@ namespace TauCode.WebApi.Client
                 message.Content = new StringContent(json, Encoding.UTF8, "application/json");
             }
 
-            return _httpClient.SendAsync(message);
+            return this.HttpClient.SendAsync(message);
         }
 
         private static string EvaluateSegmentMatch(Match match, object segments)
@@ -155,6 +149,8 @@ namespace TauCode.WebApi.Client
         #endregion
 
         #region IServiceClient Members
+
+        public HttpClient HttpClient { get; private set; }
 
         public Task<HttpResponseMessage> SendAsync(
             HttpMethod method,
