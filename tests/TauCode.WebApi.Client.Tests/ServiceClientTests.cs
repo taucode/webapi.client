@@ -1,11 +1,41 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
 using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using TauCode.WebApi.Client.Tests.App.Dto;
 
 namespace TauCode.WebApi.Client.Tests
 {
     [TestFixture]
     public class ServiceClientTests
     {
+        #region Fields
+
+        private HttpClient _httpClient;
+        private IServiceClient _serviceClient;
+
+        #endregion
+
+        #region Set Up & Tear Down
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            var factory = new Factory();
+            _httpClient = factory.CreateClient();
+            _serviceClient = new ServiceClient(_httpClient);
+        }
+
+
+        [SetUp]
+        public void SetUp()
+        {
+        }
+
+        #endregion
+
         #region Constructor Tests
 
         [Test]
@@ -35,14 +65,32 @@ namespace TauCode.WebApi.Client.Tests
         #region SendAsync Tests
 
         [Test]
-        public void SendAsync_ValidArguments_ReturnsValidResponse()
+        public async Task SendAsync_ValidArguments_ReturnsValidResponse()
         {
             // Arrange
+            var name = "olia";
+            var salary = 14.88m;
+            var bornAt = DateTime.Parse("1980-01-02T03:04:05");
 
             // Act
+            var message = await _serviceClient.SendAsync(
+                HttpMethod.Get,
+                "get-from-route/{name}/{salary}/{bornAt}",
+                segments: new
+                {
+                    name,
+                    salary,
+                    bornAt,
+                });
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            var json = await message.Content.ReadAsStringAsync();
+            var person = JsonConvert.DeserializeObject<PersonDto>(json);
+
+            Assert.That(person.Name, Is.EqualTo(name));
+            Assert.That(person.Salary, Is.EqualTo(salary));
+            Assert.That(person.BornAt, Is.EqualTo(bornAt));
         }
 
         #endregion
