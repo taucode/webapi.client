@@ -12,15 +12,20 @@ namespace TauCode.WebApi.Client.Exceptions
         public ServiceClientException(string message)
             : base(message)
         {
-
         }
 
-        public ServiceClientException(string code, string message)
-            : base(message)
+        public ServiceClientException(string message, Exception innerException)
+            : base(message, innerException)
         {
-            this.Code = code;
         }
 
-        public string Code { get; }
+        // todo
+        //public ServiceClientException(string code, string message)
+        //    : base(message)
+        //{
+        //    this.Code = code;
+        //}
+
+        //public string Code { get; }
     }
 }

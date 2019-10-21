@@ -14,9 +14,10 @@ namespace TauCode.WebApi.Client.Exceptions
         {
         }
 
-        public BadRequestServiceClientException(string code, string message)
-            : base(code, message)
-        {
-        }
+        // todo
+        //public BadRequestServiceClientException(string code, string message)
+        //    : base(code, message)
+        //{
+        //}
     }
 }

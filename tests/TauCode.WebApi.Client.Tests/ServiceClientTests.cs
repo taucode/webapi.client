@@ -4,6 +4,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using TauCode.WebApi.Client.Exceptions;
 using TauCode.WebApi.Client.Tests.App.Dto;
 
 namespace TauCode.WebApi.Client.Tests
@@ -91,6 +92,34 @@ namespace TauCode.WebApi.Client.Tests
             Assert.That(person.Name, Is.EqualTo(name));
             Assert.That(person.Salary, Is.EqualTo(salary));
             Assert.That(person.BornAt, Is.EqualTo(bornAt));
+        }
+
+        #endregion
+
+        #region GetAsync Tests
+
+        [Test]
+        public void GetAsync_NotFoundGeneric_ThrowHttpServiceClientException()
+        {
+            // Arrange
+            var name = "olia";
+            var salary = 14.88m;
+            var bornAt = DateTime.Parse("1980-01-02T03:04:05");
+
+            // Act
+            var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
+                await _serviceClient.GetAsync<PersonDto>(
+                    "not-existing-route/{name}/{salary}/{bornAt}",
+                    segments: new
+                    {
+                        name,
+                        salary,
+                        bornAt,
+                    }));
+
+            // Assert
+            Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.That(ex.Message, Is.Empty);
         }
 
         #endregion

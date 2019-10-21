@@ -14,9 +14,10 @@ namespace TauCode.WebApi.Client.Exceptions
         {
         }
 
-        public ConflictServiceClientException(string code, string message)
-            : base(code, message)
-        {
-        }
+        // todo
+        //public ConflictServiceClientException(string code, string message)
+        //    : base(code, message)
+        //{
+        //}
     }
 }

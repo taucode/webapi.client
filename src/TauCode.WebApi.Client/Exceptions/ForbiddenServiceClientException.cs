@@ -14,9 +14,10 @@ namespace TauCode.WebApi.Client.Exceptions
         {
         }
 
-        public ForbiddenServiceClientException(string code, string message)
-            : base(code, message)
-        {
-        }
+        // todo
+        //public ForbiddenServiceClientException(string code, string message)
+        //    : base(code, message)
+        //{
+        //}
     }
 }

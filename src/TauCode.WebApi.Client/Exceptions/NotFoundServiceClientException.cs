@@ -14,18 +14,19 @@ namespace TauCode.WebApi.Client.Exceptions
         {
         }
 
-        public NotFoundServiceClientException(string code, string message)
-            : base(code, message)
-        {
+        // todo
+        //public NotFoundServiceClientException(string code, string message)
+        //    : base(code, message)
+        //{
 
-        }
+        //}
 
-        public NotFoundServiceClientException(string code, string message, string uri)
-            : base(code, message)
-        {
-            this.Uri = uri;
-        }
+        //public NotFoundServiceClientException(string code, string message, string uri)
+        //    : base(code, message)
+        //{
+        //    this.Uri = uri;
+        //}
 
-        public string Uri { get; set; }
+        //public string Uri { get; set; }
     }
 }

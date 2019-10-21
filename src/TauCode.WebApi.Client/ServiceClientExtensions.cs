@@ -9,6 +9,7 @@ using TauCode.WebApi.Client.Exceptions;
 
 namespace TauCode.WebApi.Client
 {
+    // TODO all file. get rid of todo-s and notimpl.
     public static class ServiceClientExtensions
     {
         #region Private
@@ -27,21 +28,27 @@ namespace TauCode.WebApi.Client
                     case HttpStatusCode.NotFound:
                         if (payloadType == DtoHelper.ErrorPayloadType)
                         {
-                            var error = JsonConvert.DeserializeObject<ErrorDto>(content);
-                            ex = new NotFoundServiceClientException(error.Code, error.Message);
+                            throw new NotImplementedException();
+
+                            //var error = JsonConvert.DeserializeObject<ErrorDto>(content);
+                            //ex = new NotFoundServiceClientException(error.Code, error.Message);
                             break;
                         }
                         else
                         {
-                            throw new NotImplementedException();
+                            // Generic NotFound 404.
+                            ex = new HttpServiceClientException(HttpStatusCode.NotFound, content);
+                            break;
                         }
 
                     case HttpStatusCode.BadRequest:
                         if (payloadType == DtoHelper.ValidationErrorPayloadType)
                         {
-                            var validationError = JsonConvert.DeserializeObject<ValidationErrorDto>(content);
-                            ex = new ValidationServiceClientException(validationError);
-                            break;
+                            throw new NotImplementedException();
+
+                            //var validationError = JsonConvert.DeserializeObject<ValidationErrorDto>(content);
+                            //ex = new ValidationServiceClientException(validationError);
+                            //break;
                         }
                         else if (payloadType == DtoHelper.ErrorPayloadType)
                         {
@@ -53,6 +60,7 @@ namespace TauCode.WebApi.Client
                         }
 
 
+                    // todo ALL
                     //if (SubReasonIs(failMessage, DtoHelper.ValidationErrorSubReason))
                     //{
                     //    // validation error?
@@ -78,9 +86,10 @@ namespace TauCode.WebApi.Client
                     case HttpStatusCode.Conflict:
                         if (payloadType == DtoHelper.ErrorPayloadType)
                         {
-                            var error = JsonConvert.DeserializeObject<ErrorDto>(content);
-                            ex = new ConflictServiceClientException(error.Code, error.Message);
-                            break;
+                            throw new NotImplementedException();
+                            //var error = JsonConvert.DeserializeObject<ErrorDto>(content);
+                            //ex = new ConflictServiceClientException(error.Code, error.Message);
+                            //break;
                         }
                         else
                         {
@@ -97,7 +106,8 @@ namespace TauCode.WebApi.Client
 
                 if (ex == null)
                 {
-                    ex = new ServiceClientException($"{failMessage.StatusCode}", content);
+                    throw new NotImplementedException();
+                    //ex = new ServiceClientException($"{failMessage.StatusCode}", content);
                 }
 
                 return ex;
@@ -141,8 +151,9 @@ namespace TauCode.WebApi.Client
                 }
                 catch (Exception ex)
                 {
-                    var clientEx = new ServiceClientException("DeserializationError", ex.Message); // todo: right?
-                    return await Task.FromException<TResult>(clientEx);
+                    throw new NotImplementedException();
+                    //var clientEx = new ServiceClientException("DeserializationError", ex.Message); // todo: right?
+                    //return await Task.FromException<TResult>(clientEx);
                 }
             }
             else
@@ -226,8 +237,9 @@ namespace TauCode.WebApi.Client
                 }
                 catch (Exception ex)
                 {
-                    var clientEx = new ServiceClientException("DeserializationError", ex.Message);
-                    return await Task.FromException<CreateResultDto>(clientEx);
+                    throw new NotImplementedException();
+                    //var clientEx = new ServiceClientException("DeserializationError", ex.Message);
+                    //return await Task.FromException<CreateResultDto>(clientEx);
                 }
             }
             else
@@ -300,8 +312,9 @@ namespace TauCode.WebApi.Client
                 }
                 catch (Exception ex)
                 {
-                    var clientEx = new ServiceClientException("DeserializationError", ex.Message);
-                    return await Task.FromException<UpdateResultDto>(clientEx);
+                    throw new NotImplementedException();
+                    //var clientEx = new ServiceClientException("DeserializationError", ex.Message);
+                    //return await Task.FromException<UpdateResultDto>(clientEx);
                 }
             }
             else
@@ -374,8 +387,9 @@ namespace TauCode.WebApi.Client
                 }
                 catch (Exception ex)
                 {
-                    var clientEx = new ServiceClientException("DeserializationError", ex.Message);
-                    return await Task.FromException<CreateResultDto<T>>(clientEx);
+                    throw new NotImplementedException();
+                    //var clientEx = new ServiceClientException("DeserializationError", ex.Message);
+                    //return await Task.FromException<CreateResultDto<T>>(clientEx);
                 }
             }
             else
@@ -447,8 +461,9 @@ namespace TauCode.WebApi.Client
                 }
                 catch (Exception ex)
                 {
-                    var clientEx = new ServiceClientException("DeserializationError", ex.Message);
-                    return await Task.FromException<UpdateResultDto<T>>(clientEx);
+                    throw new NotImplementedException();
+                    //var clientEx = new ServiceClientException("DeserializationError", ex.Message);
+                    //return await Task.FromException<UpdateResultDto<T>>(clientEx);
                 }
             }
             else
@@ -521,8 +536,9 @@ namespace TauCode.WebApi.Client
                 }
                 catch (Exception ex)
                 {
-                    var clientEx = new ServiceClientException("DeserializationError", ex.Message);
-                    return await Task.FromException<DeleteResultDto>(clientEx);
+                    throw new NotImplementedException();
+                    //var clientEx = new ServiceClientException("DeserializationError", ex.Message);
+                    //return await Task.FromException<DeleteResultDto>(clientEx);
                 }
             }
             else
