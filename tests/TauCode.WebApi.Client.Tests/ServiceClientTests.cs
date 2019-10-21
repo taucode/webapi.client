@@ -255,6 +255,37 @@ namespace TauCode.WebApi.Client.Tests
             Assert.That(ex.Message, Is.EqualTo(desiredMessage));
         }
 
+        [Test]
+        public void GetAsync_ValidationError_ThrowsValidationErrorServiceClientException()
+        {
+            // Arrange
+            var desiredCode = "VALIDATION_ERROR";
+            var desiredMessage = "Request is wrong.";
+
+            // Act
+            var ex = Assert.ThrowsAsync<ValidationErrorServiceClientException>(async () =>
+                await _serviceClient.GetAsync<PersonDto>(
+                    "get-returns-validation-error",
+                    queryParams: new
+                    {
+                        desiredCode,
+                        desiredMessage
+                    }));
+
+            // Assert
+            Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+            Assert.That(ex.Code, Is.EqualTo(desiredCode));
+            Assert.That(ex.Message, Is.EqualTo(desiredMessage));
+
+            var failure = ex.Failures["name"];
+            Assert.That(failure.Code, Is.EqualTo("NameValidator"));
+            Assert.That(failure.Message, Is.EqualTo("Name is bad."));
+
+            failure = ex.Failures["salary"];
+            Assert.That(failure.Code, Is.EqualTo("SalaryValidator"));
+            Assert.That(failure.Message, Is.EqualTo("Salary is low."));
+        }
+
         #endregion
     }
 }

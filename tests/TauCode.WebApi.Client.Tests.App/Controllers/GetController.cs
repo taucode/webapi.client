@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using TauCode.WebApi.Client.Tests.App.Dto;
 
@@ -96,6 +97,49 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
             return new ContentResult
             {
                 StatusCode = (int)desiredStatusCode,
+                Content = json,
+                ContentType = "application/json",
+            };
+        }
+
+        [HttpGet]
+        [Route("get-returns-validation-error")]
+        public IActionResult GetReturnsValidationError(
+            [FromQuery]string desiredCode,
+            [FromQuery]string desiredMessage)
+        {
+            this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ValidationErrorPayloadType);
+
+            var validationError = new ValidationErrorDto
+            {
+                Code = desiredCode,
+                Message = desiredMessage,
+                Failures = new Dictionary<string, ValidationFailureDto>
+                {
+                    {
+                        "name",
+                        new ValidationFailureDto
+                        {
+                            Code = "NameValidator",
+                            Message = "Name is bad."
+                        }
+                    },
+                    {
+                        "salary",
+                        new ValidationFailureDto
+                        {
+                            Code = "SalaryValidator",
+                            Message = "Salary is low.",
+                        }
+                    }
+                },
+            };
+
+            var json = JsonConvert.SerializeObject(validationError);
+
+            return new ContentResult
+            {
+                StatusCode = (int)HttpStatusCode.BadRequest,
                 Content = json,
                 ContentType = "application/json",
             };

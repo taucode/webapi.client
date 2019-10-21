@@ -16,12 +16,12 @@ namespace TauCode.WebApi.Client
 
         private static async Task<Exception> GetFailureException(HttpResponseMessage failMessage)
         {
-            Exception ex = null;
-
             try
             {
                 var content = await failMessage.Content.ReadAsStringAsync();
                 var payloadType = failMessage.Headers.TryGetSingleHeader(DtoHelper.PayloadTypeHeaderName);
+
+                Exception ex = null;
 
                 if (payloadType == DtoHelper.ErrorPayloadType)
                 {
@@ -52,7 +52,17 @@ namespace TauCode.WebApi.Client
                 }
                 else if (payloadType == DtoHelper.ValidationErrorPayloadType)
                 {
-                    throw new NotImplementedException();
+                    var validationError = JsonConvert.DeserializeObject<ValidationErrorDto>(content);
+
+                    if (failMessage.StatusCode == HttpStatusCode.BadRequest)
+                    {
+                        ex = new ValidationErrorServiceClientException(validationError.Code, validationError.Message, validationError.Failures);
+                    }
+                    else
+                    {
+                        // actually, something is wrong.
+                        ex = new ErrorServiceClientException(failMessage.StatusCode, validationError.Code, validationError.Message);
+                    }
                 }
                 else
                 {
@@ -141,12 +151,6 @@ namespace TauCode.WebApi.Client
                 //        //break;
                 //}
 
-                if (ex == null)
-                {
-                    throw new NotImplementedException();
-                    //ex = new ServiceClientException($"{failMessage.StatusCode}", content);
-                }
-
                 return ex;
             }
             catch (Exception e)
@@ -212,7 +216,7 @@ namespace TauCode.WebApi.Client
             if (!response.IsSuccessStatusCode)
             {
                 var ex = await GetFailureException(response);
-                await Task.FromException(ex);
+                await Task.FromException(ex); // todo: ut this.
             }
         }
 
@@ -228,7 +232,7 @@ namespace TauCode.WebApi.Client
             if (!response.IsSuccessStatusCode)
             {
                 var ex = await GetFailureException(response);
-                await Task.FromException(ex);
+                await Task.FromException(ex); // todo: ut this.
             }
         }
 

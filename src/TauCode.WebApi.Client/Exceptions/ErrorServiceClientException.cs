@@ -6,7 +6,7 @@ namespace TauCode.WebApi.Client.Exceptions
     [Serializable]
     public class ErrorServiceClientException : ServiceClientException
     {
-        internal ErrorServiceClientException(HttpStatusCode statusCode, string code, string message)
+        public ErrorServiceClientException(HttpStatusCode statusCode, string code, string message)
             : base(message)
         {
             this.StatusCode = statusCode;
