@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using TauCode.WebApi.Client.Tests.App.Dto;
@@ -73,6 +74,31 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
                 Code = desiredCode,
                 Message = desiredMessage,
             });
+        }
+
+        [HttpGet]
+        [Route("get-returns-error")]
+        public IActionResult GetReturnsError(
+            [FromQuery]HttpStatusCode desiredStatusCode,
+            [FromQuery]string desiredCode,
+            [FromQuery]string desiredMessage)
+        {
+            this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
+
+            var error = new ErrorDto
+            {
+                Code = desiredCode,
+                Message = desiredMessage,
+            };
+
+            var json = JsonConvert.SerializeObject(error);
+
+            return new ContentResult
+            {
+                StatusCode = (int)desiredStatusCode,
+                Content = json,
+                ContentType = "application/json",
+            };
         }
     }
 }

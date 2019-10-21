@@ -33,6 +33,10 @@ namespace TauCode.WebApi.Client
                             ex = new BadRequestErrorServiceClientException(error.Code, error.Message);
                             break;
 
+                        case HttpStatusCode.Conflict:
+                            ex = new ConflictErrorServiceClientException(error.Code, error.Message);
+                            break;
+
                         case HttpStatusCode.NotFound:
                             ex = new NotFoundErrorServiceClientException(error.Code, error.Message);
                             break;

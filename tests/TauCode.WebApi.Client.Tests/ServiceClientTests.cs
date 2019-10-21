@@ -180,6 +180,31 @@ namespace TauCode.WebApi.Client.Tests
             Assert.That(ex.Message, Is.EqualTo(desiredMessage));
         }
 
+        [Test]
+        public void GetAsync_ConflictError_ThrowsBadRequestErrorServiceClientException()
+        {
+            // Arrange
+            var desiredStatusCode = HttpStatusCode.Conflict;
+            var desiredCode = "CONFLICT_ERROR";
+            var desiredMessage = "Invalid operation.";
+
+            // Act
+            var ex = Assert.ThrowsAsync<ConflictErrorServiceClientException>(async () =>
+                await _serviceClient.GetAsync<PersonDto>(
+                    "get-returns-error",
+                    queryParams: new
+                    {
+                        desiredStatusCode,
+                        desiredCode,
+                        desiredMessage
+                    }));
+
+            // Assert
+            Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
+            Assert.That(ex.Code, Is.EqualTo(desiredCode));
+            Assert.That(ex.Message, Is.EqualTo(desiredMessage));
+        }
+
 
         #endregion
     }
