@@ -205,6 +205,30 @@ namespace TauCode.WebApi.Client.Tests
             Assert.That(ex.Message, Is.EqualTo(desiredMessage));
         }
 
+        [Test]
+        public void GetAsync_ForbiddenError_ThrowsForbiddenErrorServiceClientException()
+        {
+            // Arrange
+            var desiredStatusCode = HttpStatusCode.Forbidden;
+            var desiredCode = "ACCESS_VIOLATION";
+            var desiredMessage = "You're not authorized.";
+
+            // Act
+            var ex = Assert.ThrowsAsync<ForbiddenErrorServiceClientException>(async () =>
+                await _serviceClient.GetAsync<PersonDto>(
+                    "get-returns-error",
+                    queryParams: new
+                    {
+                        desiredStatusCode,
+                        desiredCode,
+                        desiredMessage
+                    }));
+
+            // Assert
+            Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
+            Assert.That(ex.Code, Is.EqualTo(desiredCode));
+            Assert.That(ex.Message, Is.EqualTo(desiredMessage));
+        }
 
         #endregion
     }

@@ -37,6 +37,10 @@ namespace TauCode.WebApi.Client
                             ex = new ConflictErrorServiceClientException(error.Code, error.Message);
                             break;
 
+                        case HttpStatusCode.Forbidden:
+                            ex = new ForbiddenErrorServiceClientException(error.Code, error.Message);
+                            break;
+
                         case HttpStatusCode.NotFound:
                             ex = new NotFoundErrorServiceClientException(error.Code, error.Message);
                             break;
