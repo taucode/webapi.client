@@ -29,6 +29,10 @@ namespace TauCode.WebApi.Client
 
                     switch (failMessage.StatusCode)
                     {
+                        case HttpStatusCode.BadRequest:
+                            ex = new BadRequestErrorServiceClientException(error.Code, error.Message);
+                            break;
+
                         case HttpStatusCode.NotFound:
                             ex = new NotFoundErrorServiceClientException(error.Code, error.Message);
                             break;

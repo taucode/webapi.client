@@ -37,6 +37,19 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpGet]
+        [Route("get-returns-desired-generic-statuscode")]
+        public IActionResult GetReturnsDesiredGenericStatusCode(
+            [FromQuery] HttpStatusCode desiredStatusCode,
+            [FromQuery] string desiredContent)
+        {
+            return new ContentResult
+            {
+                StatusCode = (int)desiredStatusCode,
+                Content = desiredContent,
+            };
+        }
+
+        [HttpGet]
         [Route("get-returns-notfound-error")]
         public IActionResult GetReturnsNotFoundError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
         {
@@ -50,16 +63,16 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpGet]
-        [Route("get-returns-desired-generic-statuscode")]
-        public IActionResult GetReturnsDesiredGenericStatusCode(
-            [FromQuery] HttpStatusCode desiredStatusCode,
-            [FromQuery] string desiredContent)
+        [Route("get-returns-badrequest-error")]
+        public IActionResult GetReturnsBadRequestError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
         {
-            return new ContentResult
+            this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
+
+            return this.BadRequest(new ErrorDto
             {
-                StatusCode = (int)desiredStatusCode,
-                Content = desiredContent,
-            };
+                Code = desiredCode,
+                Message = desiredMessage,
+            });
         }
     }
 }

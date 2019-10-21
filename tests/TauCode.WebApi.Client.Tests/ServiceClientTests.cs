@@ -132,29 +132,6 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void GetAsync_NotFoundError_ThrowsNotFoundErrorServiceClientException()
-        {
-            // Arrange
-            var desiredCode = "COULD_NOT_FIND";
-            var desiredMessage = "I could not find what you wanted.";
-
-            // Act
-            var ex = Assert.ThrowsAsync<NotFoundErrorServiceClientException>(async () =>
-                await _serviceClient.GetAsync<PersonDto>(
-                    "get-returns-notfound-error",
-                    queryParams: new
-                    {
-                        desiredCode,
-                        desiredMessage
-                    }));
-
-            // Assert
-            Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
-            Assert.That(ex.Code, Is.EqualTo(desiredCode));
-            Assert.That(ex.Message, Is.EqualTo(desiredMessage));
-        }
-
-        [Test]
         [TestCase(HttpStatusCode.BadRequest)]
         [TestCase(HttpStatusCode.RequestTimeout)]
         [TestCase(HttpStatusCode.LengthRequired)]
@@ -179,6 +156,30 @@ namespace TauCode.WebApi.Client.Tests
             Assert.That(ex.StatusCode, Is.EqualTo(desiredStatusCode));
             Assert.That(ex.Message, Is.EqualTo(desiredContent));
         }
+
+        [Test]
+        public void GetAsync_BadRequestError_ThrowsBadRequestErrorServiceClientException()
+        {
+            // Arrange
+            var desiredCode = "BAD_REQUEST";
+            var desiredMessage = "Wrong request data.";
+
+            // Act
+            var ex = Assert.ThrowsAsync<BadRequestErrorServiceClientException>(async () =>
+                await _serviceClient.GetAsync<PersonDto>(
+                    "get-returns-badrequest-error",
+                    queryParams: new
+                    {
+                        desiredCode,
+                        desiredMessage
+                    }));
+
+            // Assert
+            Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+            Assert.That(ex.Code, Is.EqualTo(desiredCode));
+            Assert.That(ex.Message, Is.EqualTo(desiredMessage));
+        }
+
 
         #endregion
     }
