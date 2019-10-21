@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Net;
 using TauCode.WebApi.Client.Tests.App.Dto;
 
 namespace TauCode.WebApi.Client.Tests.App.Controllers
@@ -37,7 +38,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
 
         [HttpGet]
         [Route("get-returns-notfound-error")]
-        public IActionResult GetReturnsNotFound([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
+        public IActionResult GetReturnsNotFoundError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
         {
             this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
 
@@ -46,6 +47,19 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
                 Code = desiredCode,
                 Message = desiredMessage,
             });
+        }
+
+        [HttpGet]
+        [Route("get-returns-desired-generic-statuscode")]
+        public IActionResult GetReturnsDesiredGenericStatusCode(
+            [FromQuery] HttpStatusCode desiredStatusCode,
+            [FromQuery] string desiredContent)
+        {
+            return new ContentResult
+            {
+                StatusCode = (int)desiredStatusCode,
+                Content = desiredContent,
+            };
         }
     }
 }

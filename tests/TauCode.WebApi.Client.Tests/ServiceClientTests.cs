@@ -154,6 +154,32 @@ namespace TauCode.WebApi.Client.Tests
             Assert.That(ex.Message, Is.EqualTo(desiredMessage));
         }
 
+        [Test]
+        [TestCase(HttpStatusCode.BadRequest)]
+        [TestCase(HttpStatusCode.RequestTimeout)]
+        [TestCase(HttpStatusCode.LengthRequired)]
+        [TestCase(HttpStatusCode.InternalServerError)]
+        [TestCase(HttpStatusCode.GatewayTimeout)]
+        public void GetAsync_NotSuccessfulStatusCodeWithContent_ThrowsHttpServiceClientException(HttpStatusCode desiredStatusCode)
+        {
+            // Arrange
+            var desiredContent = "Here goes content.";
+
+            // Act
+            var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
+                await _serviceClient.GetAsync<PersonDto>(
+                    "get-returns-desired-generic-statuscode",
+                    queryParams: new
+                    {
+                        desiredStatusCode,
+                        desiredContent
+                    }));
+
+            // Assert
+            Assert.That(ex.StatusCode, Is.EqualTo(desiredStatusCode));
+            Assert.That(ex.Message, Is.EqualTo(desiredContent));
+        }
+
         #endregion
     }
 }
