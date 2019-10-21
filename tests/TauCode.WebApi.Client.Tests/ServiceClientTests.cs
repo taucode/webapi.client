@@ -99,27 +99,59 @@ namespace TauCode.WebApi.Client.Tests
         #region GetAsync Tests
 
         [Test]
-        public void GetAsync_NotFoundGeneric_ThrowHttpServiceClientException()
+        public void GetAsync_NotFoundGeneric_ThrowsHttpServiceClientException()
         {
             // Arrange
-            var name = "olia";
-            var salary = 14.88m;
-            var bornAt = DateTime.Parse("1980-01-02T03:04:05");
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
                 await _serviceClient.GetAsync<PersonDto>(
-                    "not-existing-route/{name}/{salary}/{bornAt}",
-                    segments: new
-                    {
-                        name,
-                        salary,
-                        bornAt,
-                    }));
+                    "not-existing-route"));
 
             // Assert
             Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             Assert.That(ex.Message, Is.Empty);
+        }
+
+        [Test]
+        public void GetAsync_NotFoundGenericWithContent_ThrowsHttpServiceClientExceptionWithMessageEqualToContent()
+        {
+            // Arrange
+
+            // Act
+            var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
+                await _serviceClient.GetAsync<PersonDto>("get-returns-notfound"));
+
+            // Assert
+            Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            var content = ex.Message;
+            var contentObject = JsonConvert.DeserializeObject<dynamic>(content);
+
+            Assert.That((string)contentObject.firstProp, Is.EqualTo("first-prop"));
+            Assert.That((string)contentObject.secondProp, Is.EqualTo("second-prop"));
+        }
+
+        [Test]
+        public void GetAsync_NotFoundError_ThrowsNotFoundErrorServiceClientException()
+        {
+            // Arrange
+            var desiredCode = "COULD_NOT_FIND";
+            var desiredMessage = "I could not find what you wanted.";
+
+            // Act
+            var ex = Assert.ThrowsAsync<NotFoundErrorServiceClientException>(async () =>
+                await _serviceClient.GetAsync<PersonDto>(
+                    "get-returns-notfound-error",
+                    queryParams: new
+                    {
+                        desiredCode,
+                        desiredMessage
+                    }));
+
+            // Assert
+            Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.That(ex.Code, Is.EqualTo(desiredCode));
+            Assert.That(ex.Message, Is.EqualTo(desiredMessage));
         }
 
         #endregion

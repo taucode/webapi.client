@@ -1,18 +1,20 @@
 ﻿using System;
+using System.Net;
 
 namespace TauCode.WebApi.Client.Exceptions
 {
     [Serializable]
-    public class NotFoundServiceClientException : ServiceClientException
+    public class NotFoundErrorServiceClientException : ErrorServiceClientException
     {
-        public NotFoundServiceClientException()
+        public NotFoundErrorServiceClientException(string code, string message)
+            : base(HttpStatusCode.NotFound, code, message)
         {
         }
 
-        public NotFoundServiceClientException(string message)
-            : base(message)
-        {
-        }
+        //public NotFoundErrorServiceClientException(string message)
+        //    : base(message)
+        //{
+        //}
 
         // todo
         //public NotFoundServiceClientException(string code, string message)

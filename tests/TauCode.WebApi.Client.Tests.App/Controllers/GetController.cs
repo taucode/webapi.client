@@ -34,5 +34,18 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
                 secondProp = "second-prop"
             });
         }
+
+        [HttpGet]
+        [Route("get-returns-notfound-error")]
+        public IActionResult GetReturnsNotFound([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
+        {
+            this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
+
+            return this.NotFound(new ErrorDto
+            {
+                Code = desiredCode,
+                Message = desiredMessage,
+            });
+        }
     }
 }

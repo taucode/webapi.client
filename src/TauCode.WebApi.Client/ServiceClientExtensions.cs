@@ -23,86 +23,111 @@ namespace TauCode.WebApi.Client
                 var content = await failMessage.Content.ReadAsStringAsync();
                 var payloadType = failMessage.Headers.TryGetSingleHeader(DtoHelper.PayloadTypeHeaderName);
 
-                switch (failMessage.StatusCode)
+                if (payloadType == DtoHelper.ErrorPayloadType)
                 {
-                    case HttpStatusCode.NotFound:
-                        if (payloadType == DtoHelper.ErrorPayloadType)
-                        {
-                            throw new NotImplementedException();
+                    var error = JsonConvert.DeserializeObject<ErrorDto>(content);
 
-                            //var error = JsonConvert.DeserializeObject<ErrorDto>(content);
-                            //ex = new NotFoundServiceClientException(error.Code, error.Message);
+                    switch (failMessage.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            ex = new NotFoundErrorServiceClientException(error.Code, error.Message);
                             break;
-                        }
-                        else
-                        {
-                            // Generic NotFound 404.
-                            ex = new HttpServiceClientException(HttpStatusCode.NotFound, content);
+
+                        default:
+                            ex = new ErrorServiceClientException(failMessage.StatusCode, error.Code, error.Message);
                             break;
-                        }
-
-                    case HttpStatusCode.BadRequest:
-                        if (payloadType == DtoHelper.ValidationErrorPayloadType)
-                        {
-                            throw new NotImplementedException();
-
-                            //var validationError = JsonConvert.DeserializeObject<ValidationErrorDto>(content);
-                            //ex = new ValidationServiceClientException(validationError);
-                            //break;
-                        }
-                        else if (payloadType == DtoHelper.ErrorPayloadType)
-                        {
-                            throw new NotImplementedException();
-                        }
-                        else
-                        {
-                            throw new NotImplementedException();
-                        }
-
-
-                    // todo ALL
-                    //if (SubReasonIs(failMessage, DtoHelper.ValidationErrorSubReason))
-                    //{
-                    //    // validation error?
-                    //    var validationError = JsonConvert.DeserializeObject<ValidationErrorResponseDto>(content);
-                    //    ex = new ServiceRequestValidationException(validationError);
-                    //}
-                    //else
-                    //{
-                    //    ex = new ServiceBadRequestException("BadRequest", content);
-                    //}
-
-                    //break;
-
-                    case HttpStatusCode.Forbidden:
-                        throw new NotImplementedException();
-                    //ex = TryDeserializeAsServiceException<ServiceResourceForbiddenException>(
-                    //    failMessage,
-                    //    DtoHelper.ForbiddenErrorSubReason,
-                    //    content);
-
-                    //break;
-
-                    case HttpStatusCode.Conflict:
-                        if (payloadType == DtoHelper.ErrorPayloadType)
-                        {
-                            throw new NotImplementedException();
-                            //var error = JsonConvert.DeserializeObject<ErrorDto>(content);
-                            //ex = new ConflictServiceClientException(error.Code, error.Message);
-                            //break;
-                        }
-                        else
-                        {
-                            throw new NotImplementedException();
-                        }
-
-                        //ex = TryDeserializeAsServiceException<ServiceBusinessLogicException>(
-                        //    failMessage,
-                        //    DtoHelper.BusinessLogicErrorSubReason,
-                        //    content);
-
-                        //break;
+                    }
                 }
+                else if (payloadType == DtoHelper.ValidationErrorPayloadType)
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    // Generic error.
+                    ex = new HttpServiceClientException(failMessage.StatusCode, content);
+                }
+
+                //switch (failMessage.StatusCode)
+                //{
+                //    case HttpStatusCode.NotFound:
+                //        if (payloadType == DtoHelper.ErrorPayloadType)
+                //        {
+                //            throw new NotImplementedException();
+
+                //            //var error = JsonConvert.DeserializeObject<ErrorDto>(content);
+                //            //ex = new NotFoundServiceClientException(error.Code, error.Message);
+                //            break;
+                //        }
+                //        else
+                //        {
+                //            // Generic NotFound 404.
+                //            ex = new HttpServiceClientException(HttpStatusCode.NotFound, content);
+                //            break;
+                //        }
+
+                //    case HttpStatusCode.BadRequest:
+                //        if (payloadType == DtoHelper.ValidationErrorPayloadType)
+                //        {
+                //            throw new NotImplementedException();
+
+                //            //var validationError = JsonConvert.DeserializeObject<ValidationErrorDto>(content);
+                //            //ex = new ValidationServiceClientException(validationError);
+                //            //break;
+                //        }
+                //        else if (payloadType == DtoHelper.ErrorPayloadType)
+                //        {
+                //            throw new NotImplementedException();
+                //        }
+                //        else
+                //        {
+                //            throw new NotImplementedException();
+                //        }
+
+
+                //    // todo ALL
+                //    //if (SubReasonIs(failMessage, DtoHelper.ValidationErrorSubReason))
+                //    //{
+                //    //    // validation error?
+                //    //    var validationError = JsonConvert.DeserializeObject<ValidationErrorResponseDto>(content);
+                //    //    ex = new ServiceRequestValidationException(validationError);
+                //    //}
+                //    //else
+                //    //{
+                //    //    ex = new ServiceBadRequestException("BadRequest", content);
+                //    //}
+
+                //    //break;
+
+                //    case HttpStatusCode.Forbidden:
+                //        throw new NotImplementedException();
+                //    //ex = TryDeserializeAsServiceException<ServiceResourceForbiddenException>(
+                //    //    failMessage,
+                //    //    DtoHelper.ForbiddenErrorSubReason,
+                //    //    content);
+
+                //    //break;
+
+                //    case HttpStatusCode.Conflict:
+                //        if (payloadType == DtoHelper.ErrorPayloadType)
+                //        {
+                //            throw new NotImplementedException();
+                //            //var error = JsonConvert.DeserializeObject<ErrorDto>(content);
+                //            //ex = new ConflictServiceClientException(error.Code, error.Message);
+                //            //break;
+                //        }
+                //        else
+                //        {
+                //            throw new NotImplementedException();
+                //        }
+
+                //        //ex = TryDeserializeAsServiceException<ServiceBusinessLogicException>(
+                //        //    failMessage,
+                //        //    DtoHelper.BusinessLogicErrorSubReason,
+                //        //    content);
+
+                //        //break;
+                //}
 
                 if (ex == null)
                 {
