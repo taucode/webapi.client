@@ -181,7 +181,7 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void GetAsync_ConflictError_ThrowsBadRequestErrorServiceClientException()
+        public void GetAsync_ConflictError_ThrowsConflictErrorServiceClientException()
         {
             // Arrange
             var desiredStatusCode = HttpStatusCode.Conflict;
@@ -226,6 +226,31 @@ namespace TauCode.WebApi.Client.Tests
 
             // Assert
             Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
+            Assert.That(ex.Code, Is.EqualTo(desiredCode));
+            Assert.That(ex.Message, Is.EqualTo(desiredMessage));
+        }
+
+        [Test]
+        public void GetAsync_NotFoundError_ThrowsNotFoundErrorServiceClientException()
+        {
+            // Arrange
+            var desiredStatusCode = HttpStatusCode.NotFound;
+            var desiredCode = "NOT_FOUND";
+            var desiredMessage = "Resource not found.";
+
+            // Act
+            var ex = Assert.ThrowsAsync<NotFoundErrorServiceClientException>(async () =>
+                await _serviceClient.GetAsync<PersonDto>(
+                    "get-returns-error",
+                    queryParams: new
+                    {
+                        desiredStatusCode,
+                        desiredCode,
+                        desiredMessage
+                    }));
+
+            // Assert
+            Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             Assert.That(ex.Code, Is.EqualTo(desiredCode));
             Assert.That(ex.Message, Is.EqualTo(desiredMessage));
         }
