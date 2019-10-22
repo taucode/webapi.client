@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using TauCode.WebApi.Client.Exceptions;
 using TauCode.WebApi.Client.Tests.App.Dto;
 
-namespace TauCode.WebApi.Client.Tests
+namespace TauCode.WebApi.Client.Tests.ServiceClientTests
 {
     [TestFixture]
-    public partial class ServiceClientTests
+    public class PostAsyncTests : ServiceClientTestBase
     {
         [Test]
         public async Task PostAsync_ValidArguments_ReturnsExpectedResponse()
@@ -18,14 +18,14 @@ namespace TauCode.WebApi.Client.Tests
             var name = "olia";
             var salary = 14.88m;
             var bornAt = DateTime.Parse("1980-01-02T03:04:05");
-            
+
             var prefix = "hello";
             var a = 10;
             var b = "the";
 
             // Act
-            var reversePerson = await _serviceClient.PostAsync<PersonDto>(
-                "post-reverse-person/{prefix}", 
+            var reversePerson = await this.ServiceClient.PostAsync<PersonDto>(
+                "post-reverse-person/{prefix}",
                 new
                 {
                     prefix
@@ -56,7 +56,7 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
-                await _serviceClient.PostAsync(
+                await this.ServiceClient.PostAsync(
                     "not-existing-route"));
 
             // Assert
@@ -71,7 +71,7 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
-                await _serviceClient.PostAsync("post-returns-notfound"));
+                await this.ServiceClient.PostAsync("post-returns-notfound"));
 
             // Assert
             Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
@@ -95,7 +95,7 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
-                await _serviceClient.PostAsync(
+                await this.ServiceClient.PostAsync(
                     "post-returns-desired-generic-statuscode",
                     queryParams: new
                     {
@@ -117,7 +117,7 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<BadRequestErrorServiceClientException>(async () =>
-                await _serviceClient.PostAsync(
+                await this.ServiceClient.PostAsync(
                     "post-returns-badrequest-error",
                     queryParams: new
                     {
@@ -141,7 +141,7 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<ConflictErrorServiceClientException>(async () =>
-                await _serviceClient.PostAsync(
+                await this.ServiceClient.PostAsync(
                     "post-returns-error",
                     queryParams: new
                     {
@@ -166,7 +166,7 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<ForbiddenErrorServiceClientException>(async () =>
-                await _serviceClient.PostAsync(
+                await this.ServiceClient.PostAsync(
                     "post-returns-error",
                     queryParams: new
                     {
@@ -191,7 +191,7 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<NotFoundErrorServiceClientException>(async () =>
-                await _serviceClient.PostAsync(
+                await this.ServiceClient.PostAsync(
                     "post-returns-error",
                     queryParams: new
                     {
@@ -215,7 +215,7 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<ValidationErrorServiceClientException>(async () =>
-                await _serviceClient.PostAsync(
+                await this.ServiceClient.PostAsync(
                     "post-returns-validation-error",
                     queryParams: new
                     {

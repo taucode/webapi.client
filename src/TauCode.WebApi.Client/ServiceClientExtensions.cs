@@ -9,7 +9,6 @@ using TauCode.WebApi.Client.Exceptions;
 
 namespace TauCode.WebApi.Client
 {
-    // TODO all file. get rid of todo-s and notimpl.
     public static class ServiceClientExtensions
     {
         #region Private
@@ -69,87 +68,6 @@ namespace TauCode.WebApi.Client
                     // Generic error.
                     ex = new HttpServiceClientException(failMessage.StatusCode, content);
                 }
-
-                //switch (failMessage.StatusCode)
-                //{
-                //    case HttpStatusCode.NotFound:
-                //        if (payloadType == DtoHelper.ErrorPayloadType)
-                //        {
-                //            throw new NotImplementedException();
-
-                //            //var error = JsonConvert.DeserializeObject<ErrorDto>(content);
-                //            //ex = new NotFoundServiceClientException(error.Code, error.Message);
-                //            break;
-                //        }
-                //        else
-                //        {
-                //            // Generic NotFound 404.
-                //            ex = new HttpServiceClientException(HttpStatusCode.NotFound, content);
-                //            break;
-                //        }
-
-                //    case HttpStatusCode.BadRequest:
-                //        if (payloadType == DtoHelper.ValidationErrorPayloadType)
-                //        {
-                //            throw new NotImplementedException();
-
-                //            //var validationError = JsonConvert.DeserializeObject<ValidationErrorDto>(content);
-                //            //ex = new ValidationServiceClientException(validationError);
-                //            //break;
-                //        }
-                //        else if (payloadType == DtoHelper.ErrorPayloadType)
-                //        {
-                //            throw new NotImplementedException();
-                //        }
-                //        else
-                //        {
-                //            throw new NotImplementedException();
-                //        }
-
-
-                //    // todo ALL
-                //    //if (SubReasonIs(failMessage, DtoHelper.ValidationErrorSubReason))
-                //    //{
-                //    //    // validation error?
-                //    //    var validationError = JsonConvert.DeserializeObject<ValidationErrorResponseDto>(content);
-                //    //    ex = new ServiceRequestValidationException(validationError);
-                //    //}
-                //    //else
-                //    //{
-                //    //    ex = new ServiceBadRequestException("BadRequest", content);
-                //    //}
-
-                //    //break;
-
-                //    case HttpStatusCode.Forbidden:
-                //        throw new NotImplementedException();
-                //    //ex = TryDeserializeAsServiceException<ServiceResourceForbiddenException>(
-                //    //    failMessage,
-                //    //    DtoHelper.ForbiddenErrorSubReason,
-                //    //    content);
-
-                //    //break;
-
-                //    case HttpStatusCode.Conflict:
-                //        if (payloadType == DtoHelper.ErrorPayloadType)
-                //        {
-                //            throw new NotImplementedException();
-                //            //var error = JsonConvert.DeserializeObject<ErrorDto>(content);
-                //            //ex = new ConflictServiceClientException(error.Code, error.Message);
-                //            //break;
-                //        }
-                //        else
-                //        {
-                //            throw new NotImplementedException();
-                //        }
-
-                //        //ex = TryDeserializeAsServiceException<ServiceBusinessLogicException>(
-                //        //    failMessage,
-                //        //    DtoHelper.BusinessLogicErrorSubReason,
-                //        //    content);
-
-                //        //break;
-                //}
 
                 return ex;
             }
@@ -296,7 +214,7 @@ namespace TauCode.WebApi.Client
             if (!response.IsSuccessStatusCode)
             {
                 var ex = await GetFailureException(response);
-                await Task.FromException(ex); // todo: will throw here? or wat?
+                await Task.FromException(ex);
             }
 
             var deletedId = response.Headers.TryGetSingleHeader(DtoHelper.DeletedInstanceIdHeaderName);

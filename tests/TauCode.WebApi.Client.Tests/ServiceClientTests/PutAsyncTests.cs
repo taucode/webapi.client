@@ -2,112 +2,61 @@
 using NUnit.Framework;
 using System;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using TauCode.WebApi.Client.Exceptions;
 using TauCode.WebApi.Client.Tests.App.Dto;
 
-namespace TauCode.WebApi.Client.Tests
+namespace TauCode.WebApi.Client.Tests.ServiceClientTests
 {
     [TestFixture]
-    public partial class ServiceClientTests
+    public class PutAsyncTests : ServiceClientTestBase
     {
-        #region Fields
-
-        private HttpClient _httpClient;
-        private IServiceClient _serviceClient;
-
-        #endregion
-
-        #region Set Up & Tear Down
-
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            var factory = new Factory();
-            _httpClient = factory.CreateClient();
-            _serviceClient = new ServiceClient(_httpClient);
-        }
-
-
-        [SetUp]
-        public void SetUp()
-        {
-        }
-
-        #endregion
-
-        #region Constructor Tests
-
         [Test]
-        public void Constructor_ValidArgument_RunsOk()
-        {
-            // Arrange
-
-            // Act
-            var serviceClient = new ServiceClient(_httpClient);
-
-            // Assert
-            Assert.That(serviceClient.HttpClient, Is.SameAs(_httpClient));
-        }
-
-        [Test]
-        public void Constructor_ArgumentIsNull_ThrowsArgumentNullException()
-        {
-            // Arrange
-
-            // Act
-            var ex = Assert.Throws<ArgumentNullException>(() => new ServiceClient(null));
-
-            // Assert
-            Assert.That(ex.ParamName, Is.EqualTo("httpClient"));
-        }
-
-        #endregion
-
-        #region SendAsync Tests
-
-        [Test]
-        public async Task SendAsync_ValidArguments_ReturnsValidResponse()
+        public async Task PutAsync_ValidArguments_ReturnsExpectedResponse()
         {
             // Arrange
             var name = "olia";
             var salary = 14.88m;
             var bornAt = DateTime.Parse("1980-01-02T03:04:05");
 
+            var prefix = "hello";
+            var a = 10;
+            var b = "the";
+
             // Act
-            var message = await _serviceClient.SendAsync(
-                HttpMethod.Get,
-                "get-from-route/{name}/{salary}/{bornAt}",
-                segments: new
+            var reversePerson = await this.ServiceClient.PutAsync<PersonDto>(
+                "put-reverse-person/{prefix}",
+                new
                 {
-                    name,
-                    salary,
-                    bornAt,
+                    prefix
+                },
+                new
+                {
+                    a,
+                    b,
+                },
+                new PersonDto
+                {
+                    Name = name,
+                    Salary = salary,
+                    BornAt = bornAt,
                 });
 
             // Assert
-            Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            var json = await message.Content.ReadAsStringAsync();
-            var person = JsonConvert.DeserializeObject<PersonDto>(json);
-
-            Assert.That(person.Name, Is.EqualTo(name));
-            Assert.That(person.Salary, Is.EqualTo(salary));
-            Assert.That(person.BornAt, Is.EqualTo(bornAt));
+            Assert.That(reversePerson.Name, Is.EqualTo("ailo"));
+            Assert.That(reversePerson.Salary, Is.EqualTo(-14.88m));
+            Assert.That(reversePerson.BornAt, Is.EqualTo(DateTime.Parse("1970-01-02T03:04:05")));
+            Assert.That(reversePerson.Info, Is.EqualTo("prefix=hello;a=10;b=the;"));
         }
 
-        #endregion
-
-        #region GetAsync Tests
-
         [Test]
-        public void GetAsync_NotFoundGeneric_ThrowsHttpServiceClientException()
+        public void PutAsync_NotFoundGeneric_ThrowsHttpServiceClientException()
         {
             // Arrange
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
-                await _serviceClient.GetAsync<PersonDto>(
+                await this.ServiceClient.PutAsync(
                     "not-existing-route"));
 
             // Assert
@@ -116,13 +65,13 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void GetAsync_NotFoundGenericWithContent_ThrowsHttpServiceClientExceptionWithMessageEqualToContent()
+        public void PutAsync_NotFoundGenericWithContent_ThrowsHttpServiceClientExceptionWithMessageEqualToContent()
         {
             // Arrange
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
-                await _serviceClient.GetAsync<PersonDto>("get-returns-notfound"));
+                await this.ServiceClient.PutAsync("put-returns-notfound"));
 
             // Assert
             Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
@@ -139,15 +88,15 @@ namespace TauCode.WebApi.Client.Tests
         [TestCase(HttpStatusCode.LengthRequired)]
         [TestCase(HttpStatusCode.InternalServerError)]
         [TestCase(HttpStatusCode.GatewayTimeout)]
-        public void GetAsync_NotSuccessfulStatusCodeWithContent_ThrowsHttpServiceClientException(HttpStatusCode desiredStatusCode)
+        public void PutAsync_NotSuccessfulStatusCodeWithContent_ThrowsHttpServiceClientException(HttpStatusCode desiredStatusCode)
         {
             // Arrange
             var desiredContent = "Here goes content.";
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
-                await _serviceClient.GetAsync<PersonDto>(
-                    "get-returns-desired-generic-statuscode",
+                await this.ServiceClient.PutAsync(
+                    "put-returns-desired-generic-statuscode",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -160,7 +109,7 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void GetAsync_BadRequestError_ThrowsBadRequestErrorServiceClientException()
+        public void PutAsync_BadRequestError_ThrowsBadRequestErrorServiceClientException()
         {
             // Arrange
             var desiredCode = "BAD_REQUEST";
@@ -168,8 +117,8 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<BadRequestErrorServiceClientException>(async () =>
-                await _serviceClient.GetAsync<PersonDto>(
-                    "get-returns-badrequest-error",
+                await this.ServiceClient.PutAsync(
+                    "put-returns-badrequest-error",
                     queryParams: new
                     {
                         desiredCode,
@@ -183,7 +132,7 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void GetAsync_ConflictError_ThrowsConflictErrorServiceClientException()
+        public void PutAsync_ConflictError_ThrowsConflictErrorServiceClientException()
         {
             // Arrange
             var desiredStatusCode = HttpStatusCode.Conflict;
@@ -192,8 +141,8 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<ConflictErrorServiceClientException>(async () =>
-                await _serviceClient.GetAsync<PersonDto>(
-                    "get-returns-error",
+                await this.ServiceClient.PutAsync(
+                    "put-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -208,7 +157,7 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void GetAsync_ForbiddenError_ThrowsForbiddenErrorServiceClientException()
+        public void PutAsync_ForbiddenError_ThrowsForbiddenErrorServiceClientException()
         {
             // Arrange
             var desiredStatusCode = HttpStatusCode.Forbidden;
@@ -217,8 +166,8 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<ForbiddenErrorServiceClientException>(async () =>
-                await _serviceClient.GetAsync<PersonDto>(
-                    "get-returns-error",
+                await this.ServiceClient.PutAsync(
+                    "put-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -233,7 +182,7 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void GetAsync_NotFoundError_ThrowsNotFoundErrorServiceClientException()
+        public void PutAsync_NotFoundError_ThrowsNotFoundErrorServiceClientException()
         {
             // Arrange
             var desiredStatusCode = HttpStatusCode.NotFound;
@@ -242,8 +191,8 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<NotFoundErrorServiceClientException>(async () =>
-                await _serviceClient.GetAsync<PersonDto>(
-                    "get-returns-error",
+                await this.ServiceClient.PutAsync(
+                    "put-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -258,7 +207,7 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void GetAsync_ValidationError_ThrowsValidationErrorServiceClientException()
+        public void PutAsync_ValidationError_ThrowsValidationErrorServiceClientException()
         {
             // Arrange
             var desiredCode = "VALIDATION_ERROR";
@@ -266,8 +215,8 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<ValidationErrorServiceClientException>(async () =>
-                await _serviceClient.GetAsync<PersonDto>(
-                    "get-returns-validation-error",
+                await this.ServiceClient.PutAsync(
+                    "put-returns-validation-error",
                     queryParams: new
                     {
                         desiredCode,
@@ -288,17 +237,5 @@ namespace TauCode.WebApi.Client.Tests
             Assert.That(failure.Message, Is.EqualTo("Salary is low."));
         }
 
-        [Test]
-        public void GetAsync_BadJson_ThrowsJsonReaderException()
-        {
-            // Arrange
-
-            // Act
-            // Assert
-            Assert.ThrowsAsync<JsonReaderException>(async () =>
-                await _serviceClient.GetAsync<PersonDto>("get-returns-bad-json"));
-        }
-
-        #endregion
     }
 }

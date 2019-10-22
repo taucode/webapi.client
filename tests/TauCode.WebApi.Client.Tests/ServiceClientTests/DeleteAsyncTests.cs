@@ -1,62 +1,44 @@
 ﻿using Newtonsoft.Json;
 using NUnit.Framework;
-using System;
 using System.Net;
 using System.Threading.Tasks;
 using TauCode.WebApi.Client.Exceptions;
-using TauCode.WebApi.Client.Tests.App.Dto;
 
-namespace TauCode.WebApi.Client.Tests
+namespace TauCode.WebApi.Client.Tests.ServiceClientTests
 {
     [TestFixture]
-    public partial class ServiceClientTests
+    public class DeleteAsyncTests : ServiceClientTestBase
     {
         [Test]
-        public async Task PutAsync_ValidArguments_ReturnsExpectedResponse()
+        [TestCase(true, "ex-id-1488")]
+        [TestCase(false, null)]
+        public async Task DeleteAsync_ValidArguments_ReturnsExpectedResponse(bool needReturnedId, string expectedReturnedId)
         {
             // Arrange
-            var name = "olia";
-            var salary = 14.88m;
-            var bornAt = DateTime.Parse("1980-01-02T03:04:05");
-            
-            var prefix = "hello";
-            var a = 10;
-            var b = "the";
 
             // Act
-            var reversePerson = await _serviceClient.PutAsync<PersonDto>(
-                "put-reverse-person/{prefix}", 
+            var returnedId = await this.ServiceClient.DeleteAsync("delete-by-id/{needReturnedId}",
                 new
                 {
-                    prefix
+                    needReturnedId
                 },
                 new
                 {
-                    a,
-                    b,
-                },
-                new PersonDto
-                {
-                    Name = name,
-                    Salary = salary,
-                    BornAt = bornAt,
+                    expectedReturnedId
                 });
 
             // Assert
-            Assert.That(reversePerson.Name, Is.EqualTo("ailo"));
-            Assert.That(reversePerson.Salary, Is.EqualTo(-14.88m));
-            Assert.That(reversePerson.BornAt, Is.EqualTo(DateTime.Parse("1970-01-02T03:04:05")));
-            Assert.That(reversePerson.Info, Is.EqualTo("prefix=hello;a=10;b=the;"));
+            Assert.That(returnedId, Is.EqualTo(expectedReturnedId));
         }
 
         [Test]
-        public void PutAsync_NotFoundGeneric_ThrowsHttpServiceClientException()
+        public void DeleteAsync_NotFoundGeneric_ThrowsHttpServiceClientException()
         {
             // Arrange
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
-                await _serviceClient.PutAsync(
+                await this.ServiceClient.DeleteAsync(
                     "not-existing-route"));
 
             // Assert
@@ -65,13 +47,13 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void PutAsync_NotFoundGenericWithContent_ThrowsHttpServiceClientExceptionWithMessageEqualToContent()
+        public void DeleteAsync_NotFoundGenericWithContent_ThrowsHttpServiceClientExceptionWithMessageEqualToContent()
         {
             // Arrange
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
-                await _serviceClient.PutAsync("put-returns-notfound"));
+                await this.ServiceClient.DeleteAsync("delete-returns-notfound"));
 
             // Assert
             Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
@@ -88,15 +70,15 @@ namespace TauCode.WebApi.Client.Tests
         [TestCase(HttpStatusCode.LengthRequired)]
         [TestCase(HttpStatusCode.InternalServerError)]
         [TestCase(HttpStatusCode.GatewayTimeout)]
-        public void PutAsync_NotSuccessfulStatusCodeWithContent_ThrowsHttpServiceClientException(HttpStatusCode desiredStatusCode)
+        public void DeleteAsync_NotSuccessfulStatusCodeWithContent_ThrowsHttpServiceClientException(HttpStatusCode desiredStatusCode)
         {
             // Arrange
             var desiredContent = "Here goes content.";
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
-                await _serviceClient.PutAsync(
-                    "put-returns-desired-generic-statuscode",
+                await this.ServiceClient.DeleteAsync(
+                    "delete-returns-desired-generic-statuscode",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -109,7 +91,7 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void PutAsync_BadRequestError_ThrowsBadRequestErrorServiceClientException()
+        public void DeleteAsync_BadRequestError_ThrowsBadRequestErrorServiceClientException()
         {
             // Arrange
             var desiredCode = "BAD_REQUEST";
@@ -117,8 +99,8 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<BadRequestErrorServiceClientException>(async () =>
-                await _serviceClient.PutAsync(
-                    "put-returns-badrequest-error",
+                await this.ServiceClient.DeleteAsync(
+                    "delete-returns-badrequest-error",
                     queryParams: new
                     {
                         desiredCode,
@@ -132,7 +114,7 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void PutAsync_ConflictError_ThrowsConflictErrorServiceClientException()
+        public void DeleteAsync_ConflictError_ThrowsConflictErrorServiceClientException()
         {
             // Arrange
             var desiredStatusCode = HttpStatusCode.Conflict;
@@ -141,8 +123,8 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<ConflictErrorServiceClientException>(async () =>
-                await _serviceClient.PutAsync(
-                    "put-returns-error",
+                await this.ServiceClient.DeleteAsync(
+                    "delete-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -157,7 +139,7 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void PutAsync_ForbiddenError_ThrowsForbiddenErrorServiceClientException()
+        public void DeleteAsync_ForbiddenError_ThrowsForbiddenErrorServiceClientException()
         {
             // Arrange
             var desiredStatusCode = HttpStatusCode.Forbidden;
@@ -166,8 +148,8 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<ForbiddenErrorServiceClientException>(async () =>
-                await _serviceClient.PutAsync(
-                    "put-returns-error",
+                await this.ServiceClient.DeleteAsync(
+                    "delete-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -182,7 +164,7 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void PutAsync_NotFoundError_ThrowsNotFoundErrorServiceClientException()
+        public void DeleteAsync_NotFoundError_ThrowsNotFoundErrorServiceClientException()
         {
             // Arrange
             var desiredStatusCode = HttpStatusCode.NotFound;
@@ -191,8 +173,8 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<NotFoundErrorServiceClientException>(async () =>
-                await _serviceClient.PutAsync(
-                    "put-returns-error",
+                await this.ServiceClient.DeleteAsync(
+                    "delete-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -207,7 +189,7 @@ namespace TauCode.WebApi.Client.Tests
         }
 
         [Test]
-        public void PutAsync_ValidationError_ThrowsValidationErrorServiceClientException()
+        public void DeleteAsync_ValidationError_ThrowsValidationErrorServiceClientException()
         {
             // Arrange
             var desiredCode = "VALIDATION_ERROR";
@@ -215,8 +197,8 @@ namespace TauCode.WebApi.Client.Tests
 
             // Act
             var ex = Assert.ThrowsAsync<ValidationErrorServiceClientException>(async () =>
-                await _serviceClient.PutAsync(
-                    "put-returns-validation-error",
+                await this.ServiceClient.DeleteAsync(
+                    "delete-returns-validation-error",
                     queryParams: new
                     {
                         desiredCode,
