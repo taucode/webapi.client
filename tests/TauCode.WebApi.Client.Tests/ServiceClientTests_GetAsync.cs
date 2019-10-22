@@ -10,7 +10,7 @@ using TauCode.WebApi.Client.Tests.App.Dto;
 namespace TauCode.WebApi.Client.Tests
 {
     [TestFixture]
-    public class ServiceClientTests
+    public partial class ServiceClientTests
     {
         #region Fields
 
@@ -45,9 +45,10 @@ namespace TauCode.WebApi.Client.Tests
             // Arrange
 
             // Act
+            var serviceClient = new ServiceClient(_httpClient);
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(serviceClient.HttpClient, Is.SameAs(_httpClient));
         }
 
         [Test]
@@ -56,9 +57,10 @@ namespace TauCode.WebApi.Client.Tests
             // Arrange
 
             // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => new ServiceClient(null));
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(ex.ParamName, Is.EqualTo("httpClient"));
         }
 
         #endregion
@@ -284,6 +286,17 @@ namespace TauCode.WebApi.Client.Tests
             failure = ex.Failures["salary"];
             Assert.That(failure.Code, Is.EqualTo("SalaryValidator"));
             Assert.That(failure.Message, Is.EqualTo("Salary is low."));
+        }
+
+        [Test]
+        public void GetAsync_BadJson_ThrowsJsonReaderException()
+        {
+            // Arrange
+
+            // Act
+            // Assert
+            Assert.ThrowsAsync<JsonReaderException>(async () =>
+                await _serviceClient.GetAsync<PersonDto>("get-returns-bad-json"));
         }
 
         #endregion

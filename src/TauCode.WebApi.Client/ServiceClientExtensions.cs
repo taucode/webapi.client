@@ -171,15 +171,32 @@ namespace TauCode.WebApi.Client
             return valueArray.Length == 1 ? valueArray[0] : null;
         }
 
-        #endregion
-
-        public static async Task<TResult> GetAsync<TResult>(
+        private static async Task Send(
             this IServiceClient serviceClient,
+            HttpMethod method,
             string routeTemplate,
-            object segments = null,
-            object queryParams = null)
+            object segments,
+            object queryParams,
+            object body)
         {
-            var response = await serviceClient.SendAsync(HttpMethod.Get, routeTemplate, segments, queryParams);
+            var response = await serviceClient.SendAsync(method, routeTemplate, segments, queryParams, body);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var ex = await GetFailureException(response);
+                await Task.FromException(ex);
+            }
+        }
+
+        private static async Task<TResult> Send<TResult>(
+            this IServiceClient serviceClient,
+            HttpMethod method,
+            string routeTemplate,
+            object segments,
+            object queryParams,
+            object body)
+        {
+            var response = await serviceClient.SendAsync(method, routeTemplate, segments, queryParams, body);
 
             if (response.IsSuccessStatusCode)
             {
@@ -192,9 +209,7 @@ namespace TauCode.WebApi.Client
                 }
                 catch (Exception ex)
                 {
-                    throw new NotImplementedException();
-                    //var clientEx = new ServiceClientException("DeserializationError", ex.Message); // todo: right?
-                    //return await Task.FromException<TResult>(clientEx);
+                    return await Task.FromException<TResult>(ex);
                 }
             }
             else
@@ -204,37 +219,71 @@ namespace TauCode.WebApi.Client
             }
         }
 
-        public static async Task PostAsync(
+        #endregion
+
+        public static Task<TResult> GetAsync<TResult>(
+            this IServiceClient serviceClient,
+            string routeTemplate,
+            object segments = null,
+            object queryParams = null) =>
+            serviceClient.Send<TResult>(
+                HttpMethod.Get,
+                routeTemplate,
+                segments,
+                queryParams,
+                null);
+
+        public static Task PostAsync(
             this IServiceClient serviceClient,
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            object body = null)
-        {
-            var response = await serviceClient.SendAsync(HttpMethod.Post, routeTemplate, segments, queryParams, body);
+            object body = null) =>
+            serviceClient.Send(
+                HttpMethod.Post,
+                routeTemplate,
+                segments,
+                queryParams,
+                body);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                var ex = await GetFailureException(response);
-                await Task.FromException(ex); // todo: ut this.
-            }
-        }
-
-        public static async Task PutAsync(
+        public static Task<TResult> PostAsync<TResult>(
             this IServiceClient serviceClient,
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            object body = null)
-        {
-            var response = await serviceClient.SendAsync(HttpMethod.Put, routeTemplate, segments, queryParams, body);
+            object body = null) =>
+            serviceClient.Send<TResult>(
+                HttpMethod.Post,
+                routeTemplate,
+                segments,
+                queryParams,
+                body);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                var ex = await GetFailureException(response);
-                await Task.FromException(ex); // todo: ut this.
-            }
-        }
+        public static Task PutAsync(
+            this IServiceClient serviceClient,
+            string routeTemplate,
+            object segments = null,
+            object queryParams = null,
+            object body = null) =>
+            serviceClient.Send(
+                HttpMethod.Put,
+                routeTemplate,
+                segments,
+                queryParams,
+                body);
+
+        public static Task<TResult> PutAsync<TResult>(
+            this IServiceClient serviceClient,
+            string routeTemplate,
+            object segments = null,
+            object queryParams = null,
+            object body = null) =>
+            serviceClient.Send<TResult>(
+                HttpMethod.Put,
+                routeTemplate,
+                segments,
+                queryParams,
+                body);
 
         public static async Task<string> DeleteAsync(
             this IServiceClient serviceClient,
@@ -252,160 +301,6 @@ namespace TauCode.WebApi.Client
 
             var deletedId = response.Headers.TryGetSingleHeader(DtoHelper.DeletedInstanceIdHeaderName);
             return deletedId;
-        }
-
-        public static async Task<T> CreateAsync<T>(
-            this IServiceClient serviceClient,
-            string routeTemplate,
-            object segments = null,
-            object queryParams = null,
-            object body = null)
-        {
-            var response = await serviceClient.SendAsync(HttpMethod.Post, routeTemplate, segments, queryParams, body);
-
-            throw new NotImplementedException();
-
-            //if (!response.IsSuccessStatusCode)
-            //{
-            //    var ex = await GetFailureException(response);
-            //    return await Task.FromException<CreateResultDto>(ex);
-            //}
-
-            //var payloadType = response.Headers.TryGetSingleHeader(DtoHelper.PayloadTypeHeaderName);
-            //if (payloadType == DtoHelper.CreateResultPayloadType)
-            //{
-            //    var json = await response.Content.ReadAsStringAsync();
-
-            //    try
-            //    {
-            //        var content = JsonConvert.DeserializeObject<CreateResultDto>(json);
-            //        return content;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        throw new NotImplementedException();
-            //        //var clientEx = new ServiceClientException("DeserializationError", ex.Message);
-            //        //return await Task.FromException<CreateResultDto>(clientEx);
-            //    }
-            //}
-            //else
-            //{
-            //    throw new NotImplementedException();
-            //}
-
-            //string instanceId;
-            //string route;
-
-            //try
-            //{
-            //    instanceId = response.Headers.TryGetSingleHeader(DtoHelper.InstanceIdHeaderName);
-            //    route = response.Headers.TryGetSingleHeader(DtoHelper.RouteHeaderName);
-            //}
-            //catch (Exception ex)
-            //{
-            //    return await Task.FromException<UpdateResult<T>>(ex);
-            //}
-
-            //T content;
-
-            //var json = await response.Content.ReadAsStringAsync();
-
-            //try
-            //{
-            //    content = JsonConvert.DeserializeObject<T>(json);
-            //}
-            //catch (Exception ex)
-            //{
-            //    var clientEx = new ServiceClientException("DeserializationError", ex.Message);
-            //    return await Task.FromException<UpdateResult<T>>(clientEx);
-            //}
-
-            //var updateResult = new UpdateResult<T>
-            //{
-            //    StatusCode = response.StatusCode,
-            //    InstanceId = instanceId,
-            //    Route = route,
-            //    Content = content,
-            //};
-
-            //return updateResult;
-        }
-
-        public static async Task<T> UpdateAsync<T>(
-            this IServiceClient serviceClient,
-            string routeTemplate,
-            object segments = null,
-            object queryParams = null,
-            object body = null)
-        {
-            var response = await serviceClient.SendAsync(HttpMethod.Put, routeTemplate, segments, queryParams, body);
-
-            throw new NotImplementedException();
-
-            //if (!response.IsSuccessStatusCode)
-            //{
-            //    var ex = await GetFailureException(response);
-            //    return await Task.FromException<UpdateResultDto>(ex);
-            //}
-
-            //var payloadType = response.Headers.TryGetSingleHeader(DtoHelper.PayloadTypeHeaderName);
-            //if (payloadType == DtoHelper.UpdateResultPayloadType)
-            //{
-            //    var json = await response.Content.ReadAsStringAsync();
-
-            //    try
-            //    {
-            //        var content = JsonConvert.DeserializeObject<UpdateResultDto>(json);
-            //        return content;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        throw new NotImplementedException();
-            //        //var clientEx = new ServiceClientException("DeserializationError", ex.Message);
-            //        //return await Task.FromException<UpdateResultDto>(clientEx);
-            //    }
-            //}
-            //else
-            //{
-            //    throw new NotImplementedException();
-            //}
-
-            //string instanceId;
-            //string route;
-
-            //try
-            //{
-            //    instanceId = response.Headers.TryGetSingleHeader(DtoHelper.InstanceIdHeaderName);
-            //    route = response.Headers.TryGetSingleHeader(DtoHelper.RouteHeaderName);
-            //}
-            //catch (Exception ex)
-            //{
-            //    return await Task.FromException<UpdateResult<T>>(ex);
-            //}
-
-            //T content;
-
-            //var json = await response.Content.ReadAsStringAsync();
-
-            //try
-            //{
-            //    content = JsonConvert.DeserializeObject<T>(json);
-            //}
-            //catch (Exception ex)
-            //{
-            //    var clientEx = new ServiceClientException("DeserializationError", ex.Message);
-            //    return await Task.FromException<UpdateResult<T>>(clientEx);
-            //}
-
-            //var updateResult = new UpdateResult<T>
-            //{
-            //    StatusCode = response.StatusCode,
-            //    InstanceId = instanceId,
-            //    Route = route,
-            //    Content = content,
-            //};
-
-            //return updateResult;
         }
     }
 }
