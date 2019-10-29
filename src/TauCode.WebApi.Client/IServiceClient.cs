@@ -5,6 +5,8 @@ namespace TauCode.WebApi.Client
 {
     public interface IServiceClient
     {
+        HttpClient HttpClient { get; }
+
         Task<HttpResponseMessage> SendAsync(
             HttpMethod method,
             string routeTemplate,

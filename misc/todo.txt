@@ -1,4 +1,8 @@
 2019-08-15
 ==========
-    1. Get rid of comments in ServiceClientExtensions.cs
++   1. Get rid of comments in ServiceClientExtensions.cs
+
+2019-09-01
+==========
++   1. Get rid of suffix 'Response' in name of prop 'ValidationErrorResponse' in class ValidationServiceClientException.cs
 
