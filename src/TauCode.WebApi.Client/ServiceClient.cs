@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using TauCode.Data;
 
 namespace TauCode.WebApi.Client
@@ -28,63 +26,7 @@ namespace TauCode.WebApi.Client
         {
             var uri = request.Route;
 
-            var querySb = new StringBuilder();
-            var added = false;
-
-            if (request.QueryParameters.Count > 0)
-            {
-                foreach (var pair in request.QueryParameters)
-                {
-                    var name = pair.Key;
-                    var value = pair.Value;
-
-                    if (value == null)
-                    {
-                        continue; // won't add nulls to query string
-                    }
-
-                    if (value is IEnumerable collection && !(value is string))
-                    {
-                        foreach (var collectionEntry in collection)
-                        {
-                            if (collectionEntry == null)
-                            {
-                                continue; // won't add nulls to query string
-                            }
-
-                            if (added)
-                            {
-                                querySb.Append("&");
-                            }
-
-                            var serializedCollectionEntry = SerializeValue(collectionEntry);
-                            var escapedCollectionEntry = HttpUtility.UrlEncode(serializedCollectionEntry);
-                            querySb.AppendFormat($"{name}={escapedCollectionEntry}");
-                            added = true;
-                        }
-                    }
-                    else
-                    {
-                        if (added)
-                        {
-                            querySb.Append("&");
-                        }
-
-                        var serializedValue = SerializeValue(value);
-                        var escapedValue = HttpUtility.UrlEncode(serializedValue);
-                        querySb.AppendFormat($"{name}={escapedValue}");
-                        added = true;
-                    }
-                }
-            }
-
-            if (added)
-            {
-                querySb.Insert(0, '?');
-            }
-
-            var finalUri = uri + querySb;
-
+            var finalUri = WebApiClientHelper.AddQueryParams(uri, request.QueryParameters);
             var message = new HttpRequestMessage(request.HttpMethod, finalUri);
 
             if (request.Body != null)
@@ -116,7 +58,7 @@ namespace TauCode.WebApi.Client
                 throw new ArgumentException($"'segments' object has '{name}' value equal to 'null'", nameof(segments));
             }
 
-            var stringValue = JsonUtility.SerializeValue(value);
+            var stringValue = WebApiClientHelper.SerializeValueToJson(value);
             return stringValue;
         }
 
@@ -134,16 +76,6 @@ namespace TauCode.WebApi.Client
             }
 
             return new ValueDictionary(queryParams);
-        }
-
-        private static string SerializeValue(object value)
-        {
-            if (value is string s)
-            {
-                return s; // JSON will escape '\\' and '"', we don't want it.
-            }
-
-            return JsonUtility.SerializeValue(value);
         }
 
         #endregion

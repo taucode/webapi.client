@@ -2,12 +2,24 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
+using TauCode.WebApi.Client.Tests.App.Dto;
 
 namespace TauCode.WebApi.Client.Tests.App.Controllers
 {
     [ApiController]
     public class DeleteController : ControllerBase
     {
+        [HttpDelete]
+        [Route("delete-by-code/{code}")]
+        public IActionResult DeleteByCode([FromRoute]string code, string name)
+        {
+            return this.Ok(new CodeDto
+            {
+                Code = code,
+                Name = name,
+            });
+        }
+
         [HttpDelete]
         [Route("delete-by-id/{needReturnedId}")]
         public IActionResult DeleteById(

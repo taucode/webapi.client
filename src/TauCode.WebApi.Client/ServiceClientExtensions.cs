@@ -203,7 +203,19 @@ namespace TauCode.WebApi.Client
                 queryParams,
                 body);
 
-        public static async Task<string> DeleteAsync(
+        public static Task<TResult> DeleteAsync<TResult>(
+            this IServiceClient serviceClient,
+            string routeTemplate,
+            object segments = null,
+            object queryParams = null) =>
+            serviceClient.Send<TResult>(
+                HttpMethod.Delete,
+                routeTemplate,
+                segments,
+                queryParams,
+                null);
+
+        public static async Task<string> DeleteAndReturnIdAsync(
             this IServiceClient serviceClient,
             string routeTemplate,
             object segments = null,
