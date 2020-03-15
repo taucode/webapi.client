@@ -36,11 +36,11 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: 'nuget\TauCode.WebApi.nuspec'
+    packagesToPack: 'nuget\TauCode.WebApi.Client.nuspec'
     versioningScheme: 'off'
 
 - task: NuGetCommand@2
   inputs:
     command: 'custom'
-    arguments: 'push $(Build.ArtifactStagingDirectory)\TauCode.WebApi.1.0.0-dev-2020-03-15-10-38.nupkg -ApiKey $(NUGET_API_KEY) -Source https://api.nuget.org/v3/index.json'
+    arguments: 'push $(Build.ArtifactStagingDirectory)\TauCode.WebApi.Client.1.0.0-dev-2020-03-15-10-55.nupkg -ApiKey $(NUGET_API_KEY) -Source https://api.nuget.org/v3/index.json'
 
