@@ -20,10 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{A9F170F8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.WebApi.Client", "src\TauCode.WebApi.Client\TauCode.WebApi.Client.csproj", "{0D882AE5-9C20-462A-AC13-A666CE3A7214}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.WebApi.Client.Tests", "tests\TauCode.WebApi.Client.Tests\TauCode.WebApi.Client.Tests.csproj", "{F4311A3F-10DF-4A45-B7A3-B9A775543C8A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.WebApi.Client.Tests.App", "tests\TauCode.WebApi.Client.Tests.App\TauCode.WebApi.Client.Tests.App.csproj", "{D08F51DB-CF35-4D73-B328-35F23B26F53B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{74E56CCE-87B3-4161-A5DC-1DDA9C00639C}"
 	ProjectSection(SolutionItems) = preProject
 		build\azure-pipelines-dev.yml = build\azure-pipelines-dev.yml
@@ -40,22 +36,12 @@ Global
 		{0D882AE5-9C20-462A-AC13-A666CE3A7214}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D882AE5-9C20-462A-AC13-A666CE3A7214}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D882AE5-9C20-462A-AC13-A666CE3A7214}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4311A3F-10DF-4A45-B7A3-B9A775543C8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4311A3F-10DF-4A45-B7A3-B9A775543C8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4311A3F-10DF-4A45-B7A3-B9A775543C8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4311A3F-10DF-4A45-B7A3-B9A775543C8A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D08F51DB-CF35-4D73-B328-35F23B26F53B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D08F51DB-CF35-4D73-B328-35F23B26F53B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D08F51DB-CF35-4D73-B328-35F23B26F53B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D08F51DB-CF35-4D73-B328-35F23B26F53B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0D882AE5-9C20-462A-AC13-A666CE3A7214} = {22A29252-9F9E-4EEA-8718-3BDED9A44044}
-		{F4311A3F-10DF-4A45-B7A3-B9A775543C8A} = {AFB8254A-4146-4393-AC89-756C1B21E71A}
-		{D08F51DB-CF35-4D73-B328-35F23B26F53B} = {AFB8254A-4146-4393-AC89-756C1B21E71A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E6354910-DEC2-433F-8D76-E81510FDFC17}
