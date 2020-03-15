@@ -22,7 +22,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.WebApi.Client", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.WebApi.Client.Tests", "tests\TauCode.WebApi.Client.Tests\TauCode.WebApi.Client.Tests.csproj", "{F4311A3F-10DF-4A45-B7A3-B9A775543C8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.WebApi.Client.Tests.App", "tests\TauCode.WebApi.Client.Tests.App\TauCode.WebApi.Client.Tests.App.csproj", "{D08F51DB-CF35-4D73-B328-35F23B26F53B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.WebApi.Client.Tests.App", "tests\TauCode.WebApi.Client.Tests.App\TauCode.WebApi.Client.Tests.App.csproj", "{D08F51DB-CF35-4D73-B328-35F23B26F53B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{74E56CCE-87B3-4161-A5DC-1DDA9C00639C}"
+	ProjectSection(SolutionItems) = preProject
+		build\azure-pipelines-dev.yml = build\azure-pipelines-dev.yml
+		build\azure-pipelines.yml = build\azure-pipelines.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
