@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TauCode.WebApi.Client.Tests.App
@@ -13,7 +12,10 @@ namespace TauCode.WebApi.Client.Tests.App
 
         public void Configure(IApplicationBuilder app)
         {
-            app.UseMvcWithDefaultRoute();
+            app.UseRouting();
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+            });
         }
     }
 }

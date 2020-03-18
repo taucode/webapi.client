@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="TauCode.Data" Version="1.0.0-dev-2019-12-21-21-07" />
-    <PackageReference Include="TauCode.WebApi" Version="1.0.0-dev-2020-01-27-11-48" />
+    <PackageReference Include="TauCode.Data" Version="1.0.0-dev-2020-03-15-20-30" />
+    <PackageReference Include="TauCode.WebApi" Version="1.0.0-dev-2020-03-15-23-43" />
   </ItemGroup>
 
 </Project>
