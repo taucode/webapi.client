@@ -31,7 +31,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
-                await this.ServiceClient.GetAsync<PersonDto>("get-returns-notfound"));
+                await this.ServiceClient.GetAsync<PersonDto>("api/get-returns-notfound"));
 
             // Assert
             Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
@@ -56,7 +56,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
                 await this.ServiceClient.GetAsync<PersonDto>(
-                    "get-returns-desired-generic-statuscode",
+                    "api/get-returns-desired-generic-statuscode",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -78,7 +78,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<BadRequestErrorServiceClientException>(async () =>
                 await this.ServiceClient.GetAsync<PersonDto>(
-                    "get-returns-badrequest-error",
+                    "api/get-returns-badrequest-error",
                     queryParams: new
                     {
                         desiredCode,
@@ -102,7 +102,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<ConflictErrorServiceClientException>(async () =>
                 await this.ServiceClient.GetAsync<PersonDto>(
-                    "get-returns-error",
+                    "api/get-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -127,7 +127,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<ForbiddenErrorServiceClientException>(async () =>
                 await this.ServiceClient.GetAsync<PersonDto>(
-                    "get-returns-error",
+                    "api/get-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -152,7 +152,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<NotFoundErrorServiceClientException>(async () =>
                 await this.ServiceClient.GetAsync<PersonDto>(
-                    "get-returns-error",
+                    "api/get-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -176,7 +176,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<ValidationErrorServiceClientException>(async () =>
                 await this.ServiceClient.GetAsync<PersonDto>(
-                    "get-returns-validation-error",
+                    "api/get-returns-validation-error",
                     queryParams: new
                     {
                         desiredCode,
@@ -205,7 +205,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             // Assert
             Assert.ThrowsAsync<JsonReaderException>(async () =>
-                await this.ServiceClient.GetAsync<PersonDto>("get-returns-bad-json"));
+                await this.ServiceClient.GetAsync<PersonDto>("api/get-returns-bad-json"));
         }
     }
 }

@@ -46,7 +46,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var message = await ServiceClient.SendAsync(
                 HttpMethod.Get,
-                "get-from-route/{name}/{salary}/{bornAt}",
+                "api/get-from-route/{name}/{salary}/{bornAt}",
                 segments: new
                 {
                     name,

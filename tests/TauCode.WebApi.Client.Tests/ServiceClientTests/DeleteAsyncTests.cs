@@ -16,7 +16,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
 
             // Act
             var result = await this.ServiceClient.DeleteAsync<CodeDto>(
-                "delete-by-code/{code}",
+                "api/delete-by-code/{code}",
                 new
                 {
                     code
