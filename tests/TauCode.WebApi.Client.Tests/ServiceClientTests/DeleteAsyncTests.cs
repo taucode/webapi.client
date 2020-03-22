@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Threading.Tasks;
-using TauCode.WebApi.Client.Tests.App.Dto;
+using TauCode.WebApi.Client.Tests.AppHost.Dto;
 
 namespace TauCode.WebApi.Client.Tests.ServiceClientTests
 {

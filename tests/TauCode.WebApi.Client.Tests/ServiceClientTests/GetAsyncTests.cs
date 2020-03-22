@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Net;
 using TauCode.WebApi.Client.Exceptions;
-using TauCode.WebApi.Client.Tests.App.Dto;
+using TauCode.WebApi.Client.Tests.AppHost.Dto;
 
 namespace TauCode.WebApi.Client.Tests.ServiceClientTests
 {

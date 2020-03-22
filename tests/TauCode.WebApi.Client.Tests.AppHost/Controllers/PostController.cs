@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using TauCode.WebApi.Client.Tests.App.Dto;
+using TauCode.WebApi.Client.Tests.AppHost.Dto;
 
-namespace TauCode.WebApi.Client.Tests.App.Controllers
+namespace TauCode.WebApi.Client.Tests.AppHost.Controllers
 {
     [ApiController]
     public class PostController : ControllerBase
