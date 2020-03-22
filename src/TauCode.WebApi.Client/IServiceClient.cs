@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace TauCode.WebApi.Client
@@ -12,6 +13,7 @@ namespace TauCode.WebApi.Client
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            object body = null);
+            object body = null,
+            IDictionary<string, string> headers = null);
     }
 }

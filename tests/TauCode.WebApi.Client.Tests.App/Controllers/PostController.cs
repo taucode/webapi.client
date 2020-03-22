@@ -13,7 +13,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
     public class PostController : ControllerBase
     {
         [HttpPost]
-        [Route("post-reverse-person/{prefix}")]
+        [Route("api/post-reverse-person/{prefix}")]
         public IActionResult PostFromRoute(
             [FromBody]PersonDto person,
             [FromRoute]string prefix,
@@ -37,7 +37,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpPost]
-        [Route("post-returns-notfound")]
+        [Route("api/post-returns-notfound")]
         public IActionResult PostReturnsNotFound()
         {
             return this.NotFound(new
@@ -48,7 +48,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpPost]
-        [Route("post-returns-desired-generic-statuscode")]
+        [Route("api/post-returns-desired-generic-statuscode")]
         public IActionResult PostReturnsDesiredGenericStatusCode(
             [FromQuery] HttpStatusCode desiredStatusCode,
             [FromQuery] string desiredContent)
@@ -61,7 +61,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpPost]
-        [Route("post-returns-notfound-error")]
+        [Route("api/post-returns-notfound-error")]
         public IActionResult PostReturnsNotFoundError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
         {
             this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
@@ -74,7 +74,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpPost]
-        [Route("post-returns-badrequest-error")]
+        [Route("api/post-returns-badrequest-error")]
         public IActionResult PostReturnsBadRequestError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
         {
             this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
@@ -87,7 +87,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpPost]
-        [Route("post-returns-error")]
+        [Route("api/post-returns-error")]
         public IActionResult PostReturnsError(
             [FromQuery]HttpStatusCode desiredStatusCode,
             [FromQuery]string desiredCode,
@@ -112,7 +112,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpPost]
-        [Route("post-returns-validation-error")]
+        [Route("api/post-returns-validation-error")]
         public IActionResult PostReturnsValidationError(
             [FromQuery]string desiredCode,
             [FromQuery]string desiredMessage)
@@ -155,7 +155,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpPost]
-        [Route("post-returns-bad-json")]
+        [Route("api/post-returns-bad-json")]
         public IActionResult PostReturnsBadJson()
         {
             var badJson = "<bad_json>";

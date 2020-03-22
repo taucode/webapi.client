@@ -17,5 +17,7 @@ namespace TauCode.WebApi.Client
         public IDictionary<string, object> QueryParameters { get; set; }
 
         public object Body { get; set; }
+
+        public IDictionary<string, string> Headers { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
     public class GetController : ControllerBase
     {
         [HttpGet]
-        [Route("get-from-route/{name}/{salary}/{bornAt}")]
+        [Route("api/get-from-route/{name}/{salary}/{bornAt}")]
         public IActionResult GetFromRoute(
             [FromRoute]string name,
             [FromRoute]decimal salary,
@@ -28,7 +28,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpGet]
-        [Route("get-returns-notfound")]
+        [Route("api/get-returns-notfound")]
         public IActionResult GetReturnsNotFound()
         {
             return this.NotFound(new
@@ -39,7 +39,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpGet]
-        [Route("get-returns-desired-generic-statuscode")]
+        [Route("api/get-returns-desired-generic-statuscode")]
         public IActionResult GetReturnsDesiredGenericStatusCode(
             [FromQuery] HttpStatusCode desiredStatusCode,
             [FromQuery] string desiredContent)
@@ -52,7 +52,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpGet]
-        [Route("get-returns-notfound-error")]
+        [Route("api/get-returns-notfound-error")]
         public IActionResult GetReturnsNotFoundError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
         {
             this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
@@ -65,7 +65,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpGet]
-        [Route("get-returns-badrequest-error")]
+        [Route("api/get-returns-badrequest-error")]
         public IActionResult GetReturnsBadRequestError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
         {
             this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
@@ -78,7 +78,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpGet]
-        [Route("get-returns-error")]
+        [Route("api/get-returns-error")]
         public IActionResult GetReturnsError(
             [FromQuery]HttpStatusCode desiredStatusCode,
             [FromQuery]string desiredCode,
@@ -103,7 +103,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpGet]
-        [Route("get-returns-validation-error")]
+        [Route("api/get-returns-validation-error")]
         public IActionResult GetReturnsValidationError(
             [FromQuery]string desiredCode,
             [FromQuery]string desiredMessage)
@@ -146,7 +146,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpGet]
-        [Route("get-returns-bad-json")]
+        [Route("api/get-returns-bad-json")]
         public IActionResult GetReturnsBadJson()
         {
             var badJson = "<bad_json>";

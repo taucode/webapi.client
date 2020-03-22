@@ -10,7 +10,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
     public class DeleteController : ControllerBase
     {
         [HttpDelete]
-        [Route("delete-by-code/{code}")]
+        [Route("api/delete-by-code/{code}")]
         public IActionResult DeleteByCode([FromRoute]string code, string name)
         {
             return this.Ok(new CodeDto
@@ -21,7 +21,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpDelete]
-        [Route("delete-by-id/{needReturnedId}")]
+        [Route("api/delete-by-id/{needReturnedId}")]
         public IActionResult DeleteById(
             [FromRoute]bool needReturnedId,
             [FromQuery]string expectedReturnedId)
@@ -35,7 +35,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpDelete]
-        [Route("delete-returns-notfound")]
+        [Route("api/delete-returns-notfound")]
         public IActionResult DeleteReturnsNotFound()
         {
             return this.NotFound(new
@@ -46,7 +46,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpDelete]
-        [Route("delete-returns-desired-generic-statuscode")]
+        [Route("api/delete-returns-desired-generic-statuscode")]
         public IActionResult DeleteReturnsDesiredGenericStatusCode(
             [FromQuery] HttpStatusCode desiredStatusCode,
             [FromQuery] string desiredContent)
@@ -59,7 +59,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpDelete]
-        [Route("delete-returns-notfound-error")]
+        [Route("api/delete-returns-notfound-error")]
         public IActionResult DeleteReturnsNotFoundError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
         {
             this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
@@ -72,7 +72,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpDelete]
-        [Route("delete-returns-badrequest-error")]
+        [Route("api/delete-returns-badrequest-error")]
         public IActionResult DeleteReturnsBadRequestError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
         {
             this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
@@ -85,7 +85,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpDelete]
-        [Route("delete-returns-error")]
+        [Route("api/delete-returns-error")]
         public IActionResult DeleteReturnsError(
             [FromQuery]HttpStatusCode desiredStatusCode,
             [FromQuery]string desiredCode,
@@ -110,7 +110,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpDelete]
-        [Route("delete-returns-validation-error")]
+        [Route("api/delete-returns-validation-error")]
         public IActionResult DeleteReturnsValidationError(
             [FromQuery]string desiredCode,
             [FromQuery]string desiredMessage)
@@ -153,7 +153,7 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
         }
 
         [HttpDelete]
-        [Route("delete-returns-bad-json")]
+        [Route("api/delete-returns-bad-json")]
         public IActionResult DeleteReturnsBadJson()
         {
             var badJson = "<bad_json>";
