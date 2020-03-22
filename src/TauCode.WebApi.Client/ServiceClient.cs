@@ -31,8 +31,22 @@ namespace TauCode.WebApi.Client
 
             if (request.Body != null)
             {
-                var json = JsonConvert.SerializeObject(request.Body);
+                var json = JsonConvert.SerializeObject(request.Body, WebApiClientHelper.JsonSerializerSettings);
                 message.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            }
+
+            if (request.Headers != null)
+            {
+                foreach (var pair in request.Headers)
+                {
+                    var headerName = pair.Key;
+                    var headerValue = pair.Value;
+
+                    if (headerValue != null)
+                    {
+                        message.Headers.Add(headerName, headerValue);
+                    }
+                }
             }
 
             return this.HttpClient.SendAsync(message);
@@ -42,20 +56,20 @@ namespace TauCode.WebApi.Client
         {
             if (segments == null)
             {
-                throw new ArgumentException("Route expects 'segments' object, but it was null", nameof(segments));
+                throw new ArgumentException("Route expects 'segments' object, but it was null.", nameof(segments));
             }
 
             var name = match.Result("$1");
             var property = segments.GetType().GetProperty(name);
             if (property == null)
             {
-                throw new ArgumentException($"Property '{name}', which is required by the route, not found in 'segments' object", nameof(segments));
+                throw new ArgumentException($"Property '{name}', which is required by the route, not found in 'segments' object.", nameof(segments));
             }
 
             var value = property.GetValue(segments);
             if (value == null)
             {
-                throw new ArgumentException($"'segments' object has '{name}' value equal to 'null'", nameof(segments));
+                throw new ArgumentException($"'segments' object has '{name}' value equal to 'null'.", nameof(segments));
             }
 
             var stringValue = WebApiClientHelper.SerializeValueToJson(value);
@@ -89,7 +103,8 @@ namespace TauCode.WebApi.Client
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            object body = null)
+            object body = null,
+            IDictionary<string, string> headers = null)
         {
             if (method == null)
             {
@@ -106,6 +121,7 @@ namespace TauCode.WebApi.Client
                 Route = SubstituteRouteParams(routeTemplate, segments),
                 QueryParameters = BuildQueryParameters(queryParams),
                 Body = body,
+                Headers = headers,
             };
 
             var response = this.SendRequest(request);

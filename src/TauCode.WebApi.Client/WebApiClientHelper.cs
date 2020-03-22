@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Web;
 
@@ -10,6 +10,22 @@ namespace TauCode.WebApi.Client
 {
     public static class WebApiClientHelper
     {
+        internal static readonly JsonSerializerSettings JsonSerializerSettings;
+
+        static WebApiClientHelper()
+        {
+            JsonSerializerSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver
+                {
+                    NamingStrategy =
+                    {
+                        ProcessDictionaryKeys = false,
+                    },
+                },
+            };
+        }
+
         /// <summary>
         /// Serialize a single value (e.g. DateTime) using the JSON serializer.
         /// </summary>
@@ -18,7 +34,7 @@ namespace TauCode.WebApi.Client
         public static string SerializeValueToJson(object value)
         {
             // Get JSON string for value
-            var jsonString = JsonConvert.SerializeObject(value);
+            var jsonString = JsonConvert.SerializeObject(value, JsonSerializerSettings);
 
             // Remove unwanted quotations in the start and end of the string
             jsonString = jsonString.Trim('\"');
@@ -33,7 +49,6 @@ namespace TauCode.WebApi.Client
                 return s; // JSON will escape '\\' and '"', we don't want it.
             }
 
-            //return JsonUtility.SerializeValue(value);
             return SerializeValueToJson(value);
         }
 
@@ -121,7 +136,7 @@ namespace TauCode.WebApi.Client
                 var sbFullUrl = new StringBuilder(url);
                 if (url.Contains('?'))
                 {
-                    var lastChar = url[url.Length - 1];
+                    var lastChar = url[^1];
 
                     if (lastChar == '&' || lastChar == '?')
                     {

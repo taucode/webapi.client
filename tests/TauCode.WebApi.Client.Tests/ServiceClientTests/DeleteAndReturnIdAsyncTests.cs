@@ -17,7 +17,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Arrange
 
             // Act
-            var returnedId = await this.ServiceClient.DeleteAndReturnIdAsync("delete-by-id/{needReturnedId}",
+            var returnedId = await this.ServiceClient.DeleteAndReturnIdAsync("api/delete-by-id/{needReturnedId}",
                 new
                 {
                     needReturnedId
@@ -39,7 +39,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
                 await this.ServiceClient.DeleteAndReturnIdAsync(
-                    "not-existing-route"));
+                    "api/not-existing-route"));
 
             // Assert
             Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
@@ -53,7 +53,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
-                await this.ServiceClient.DeleteAndReturnIdAsync("delete-returns-notfound"));
+                await this.ServiceClient.DeleteAndReturnIdAsync("api/delete-returns-notfound"));
 
             // Assert
             Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
@@ -78,7 +78,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
                 await this.ServiceClient.DeleteAndReturnIdAsync(
-                    "delete-returns-desired-generic-statuscode",
+                    "api/delete-returns-desired-generic-statuscode",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -100,7 +100,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<BadRequestErrorServiceClientException>(async () =>
                 await this.ServiceClient.DeleteAndReturnIdAsync(
-                    "delete-returns-badrequest-error",
+                    "api/delete-returns-badrequest-error",
                     queryParams: new
                     {
                         desiredCode,
@@ -124,7 +124,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<ConflictErrorServiceClientException>(async () =>
                 await this.ServiceClient.DeleteAndReturnIdAsync(
-                    "delete-returns-error",
+                    "api/delete-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -149,7 +149,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<ForbiddenErrorServiceClientException>(async () =>
                 await this.ServiceClient.DeleteAndReturnIdAsync(
-                    "delete-returns-error",
+                    "api/delete-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -174,7 +174,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<NotFoundErrorServiceClientException>(async () =>
                 await this.ServiceClient.DeleteAndReturnIdAsync(
-                    "delete-returns-error",
+                    "api/delete-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -198,7 +198,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<ValidationErrorServiceClientException>(async () =>
                 await this.ServiceClient.DeleteAndReturnIdAsync(
-                    "delete-returns-validation-error",
+                    "api/delete-returns-validation-error",
                     queryParams: new
                     {
                         desiredCode,

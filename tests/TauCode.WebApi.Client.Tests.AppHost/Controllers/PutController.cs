@@ -1,42 +1,43 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
-using TauCode.WebApi.Client.Tests.App.Dto;
+using System.Text;
+using TauCode.WebApi.Client.Tests.AppHost.Dto;
 
-namespace TauCode.WebApi.Client.Tests.App.Controllers
+namespace TauCode.WebApi.Client.Tests.AppHost.Controllers
 {
     [ApiController]
-    public class DeleteController : ControllerBase
+    public class PutController : ControllerBase
     {
-        [HttpDelete]
-        [Route("delete-by-code/{code}")]
-        public IActionResult DeleteByCode([FromRoute]string code, string name)
+        [HttpPut]
+        [Route("api/put-reverse-person/{prefix}")]
+        public IActionResult PutFromRoute(
+            [FromBody]PersonDto person,
+            [FromRoute]string prefix,
+            [FromQuery]string a,
+            [FromQuery]string b)
         {
-            return this.Ok(new CodeDto
+            var sb = new StringBuilder();
+            sb.Append($"prefix={prefix};");
+            sb.Append($"a={a};");
+            sb.Append($"b={b};");
+
+            var reversedPerson = new PersonDto
             {
-                Code = code,
-                Name = name,
-            });
+                Name = new string(person.Name.Reverse().ToArray()),
+                Salary = -person.Salary,
+                BornAt = person.BornAt.AddYears(-10),
+                Info = sb.ToString(),
+            };
+
+            return this.Ok(reversedPerson);
         }
 
-        [HttpDelete]
-        [Route("delete-by-id/{needReturnedId}")]
-        public IActionResult DeleteById(
-            [FromRoute]bool needReturnedId,
-            [FromQuery]string expectedReturnedId)
-        {
-            if (needReturnedId)
-            {
-                this.Response.Headers.Add(DtoHelper.DeletedInstanceIdHeaderName, expectedReturnedId);
-            }
-
-            return this.NoContent();
-        }
-
-        [HttpDelete]
-        [Route("delete-returns-notfound")]
-        public IActionResult DeleteReturnsNotFound()
+        [HttpPut]
+        [Route("api/put-returns-notfound")]
+        public IActionResult PutReturnsNotFound()
         {
             return this.NotFound(new
             {
@@ -45,9 +46,9 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
             });
         }
 
-        [HttpDelete]
-        [Route("delete-returns-desired-generic-statuscode")]
-        public IActionResult DeleteReturnsDesiredGenericStatusCode(
+        [HttpPut]
+        [Route("api/put-returns-desired-generic-statuscode")]
+        public IActionResult PutReturnsDesiredGenericStatusCode(
             [FromQuery] HttpStatusCode desiredStatusCode,
             [FromQuery] string desiredContent)
         {
@@ -58,9 +59,9 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
             };
         }
 
-        [HttpDelete]
-        [Route("delete-returns-notfound-error")]
-        public IActionResult DeleteReturnsNotFoundError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
+        [HttpPut]
+        [Route("api/put-returns-notfound-error")]
+        public IActionResult PutReturnsNotFoundError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
         {
             this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
 
@@ -71,9 +72,9 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
             });
         }
 
-        [HttpDelete]
-        [Route("delete-returns-badrequest-error")]
-        public IActionResult DeleteReturnsBadRequestError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
+        [HttpPut]
+        [Route("api/put-returns-badrequest-error")]
+        public IActionResult PutReturnsBadRequestError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
         {
             this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
 
@@ -84,9 +85,9 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
             });
         }
 
-        [HttpDelete]
-        [Route("delete-returns-error")]
-        public IActionResult DeleteReturnsError(
+        [HttpPut]
+        [Route("api/put-returns-error")]
+        public IActionResult PutReturnsError(
             [FromQuery]HttpStatusCode desiredStatusCode,
             [FromQuery]string desiredCode,
             [FromQuery]string desiredMessage)
@@ -109,9 +110,9 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
             };
         }
 
-        [HttpDelete]
-        [Route("delete-returns-validation-error")]
-        public IActionResult DeleteReturnsValidationError(
+        [HttpPut]
+        [Route("api/put-returns-validation-error")]
+        public IActionResult PutReturnsValidationError(
             [FromQuery]string desiredCode,
             [FromQuery]string desiredMessage)
         {
@@ -152,9 +153,9 @@ namespace TauCode.WebApi.Client.Tests.App.Controllers
             };
         }
 
-        [HttpDelete]
-        [Route("delete-returns-bad-json")]
-        public IActionResult DeleteReturnsBadJson()
+        [HttpPut]
+        [Route("api/put-returns-bad-json")]
+        public IActionResult PutReturnsBadJson()
         {
             var badJson = "<bad_json>";
 
