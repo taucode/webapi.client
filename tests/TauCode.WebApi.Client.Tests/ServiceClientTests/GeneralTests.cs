@@ -4,7 +4,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using TauCode.WebApi.Client.Tests.App.Dto;
+using TauCode.WebApi.Client.Tests.AppHost.Dto;
 
 namespace TauCode.WebApi.Client.Tests.ServiceClientTests
 {
@@ -46,7 +46,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var message = await ServiceClient.SendAsync(
                 HttpMethod.Get,
-                "get-from-route/{name}/{salary}/{bornAt}",
+                "api/get-from-route/{name}/{salary}/{bornAt}",
                 segments: new
                 {
                     name,

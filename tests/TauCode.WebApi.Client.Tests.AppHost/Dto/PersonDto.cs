@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TauCode.WebApi.Client.Tests.App.Dto
+namespace TauCode.WebApi.Client.Tests.AppHost.Dto
 {
     public class PersonDto
     {

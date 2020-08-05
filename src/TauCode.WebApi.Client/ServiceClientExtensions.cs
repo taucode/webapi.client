@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -55,12 +56,18 @@ namespace TauCode.WebApi.Client
 
                     if (failMessage.StatusCode == HttpStatusCode.BadRequest)
                     {
-                        ex = new ValidationErrorServiceClientException(validationError.Code, validationError.Message, validationError.Failures);
+                        ex = new ValidationErrorServiceClientException(
+                            validationError.Code,
+                            validationError.Message,
+                            validationError.Failures);
                     }
                     else
                     {
                         // actually, something is wrong.
-                        ex = new ErrorServiceClientException(failMessage.StatusCode, validationError.Code, validationError.Message);
+                        ex = new ErrorServiceClientException(
+                            failMessage.StatusCode,
+                            validationError.Code,
+                            validationError.Message);
                     }
                 }
                 else
@@ -95,9 +102,10 @@ namespace TauCode.WebApi.Client
             string routeTemplate,
             object segments,
             object queryParams,
-            object body)
+            object body,
+            IDictionary<string, string> headers)
         {
-            var response = await serviceClient.SendAsync(method, routeTemplate, segments, queryParams, body);
+            var response = await serviceClient.SendAsync(method, routeTemplate, segments, queryParams, body, headers);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -112,9 +120,10 @@ namespace TauCode.WebApi.Client
             string routeTemplate,
             object segments,
             object queryParams,
-            object body)
+            object body,
+            IDictionary<string, string> headers)
         {
-            var response = await serviceClient.SendAsync(method, routeTemplate, segments, queryParams, body);
+            var response = await serviceClient.SendAsync(method, routeTemplate, segments, queryParams, body, headers);
 
             if (response.IsSuccessStatusCode)
             {
@@ -143,73 +152,117 @@ namespace TauCode.WebApi.Client
             this IServiceClient serviceClient,
             string routeTemplate,
             object segments = null,
-            object queryParams = null) =>
+            object queryParams = null,
+            IDictionary<string, string> headers = null) =>
             serviceClient.Send<TResult>(
                 HttpMethod.Get,
                 routeTemplate,
                 segments,
                 queryParams,
-                null);
+                null,
+                headers);
 
         public static Task PostAsync(
             this IServiceClient serviceClient,
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            object body = null) =>
+            object body = null,
+            IDictionary<string, string> headers = null) =>
             serviceClient.Send(
                 HttpMethod.Post,
                 routeTemplate,
                 segments,
                 queryParams,
-                body);
+                body,
+                headers);
 
         public static Task<TResult> PostAsync<TResult>(
             this IServiceClient serviceClient,
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            object body = null) =>
+            object body = null,
+            IDictionary<string, string> headers = null) =>
             serviceClient.Send<TResult>(
                 HttpMethod.Post,
                 routeTemplate,
                 segments,
                 queryParams,
-                body);
+                body,
+                headers);
 
         public static Task PutAsync(
             this IServiceClient serviceClient,
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            object body = null) =>
+            object body = null,
+            IDictionary<string, string> headers = null) =>
             serviceClient.Send(
                 HttpMethod.Put,
                 routeTemplate,
                 segments,
                 queryParams,
-                body);
+                body,
+                headers);
 
         public static Task<TResult> PutAsync<TResult>(
             this IServiceClient serviceClient,
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            object body = null) =>
+            object body = null,
+            IDictionary<string, string> headers = null) =>
             serviceClient.Send<TResult>(
                 HttpMethod.Put,
                 routeTemplate,
                 segments,
                 queryParams,
-                body);
+                body,
+                headers);
 
-        public static async Task<string> DeleteAsync(
+        public static Task DeleteAsync(
             this IServiceClient serviceClient,
             string routeTemplate,
             object segments = null,
-            object queryParams = null)
+            object queryParams = null,
+            IDictionary<string, string> headers = null) =>
+            serviceClient.Send(
+                HttpMethod.Delete,
+                routeTemplate,
+                segments,
+                queryParams,
+                null,
+                headers);
+
+        public static Task<TResult> DeleteAsync<TResult>(
+            this IServiceClient serviceClient,
+            string routeTemplate,
+            object segments = null,
+            object queryParams = null,
+            IDictionary<string, string> headers = null) =>
+            serviceClient.Send<TResult>(
+                HttpMethod.Delete,
+                routeTemplate,
+                segments,
+                queryParams,
+                null,
+                headers);
+
+        public static async Task<string> DeleteAndReturnIdAsync(
+            this IServiceClient serviceClient,
+            string routeTemplate,
+            object segments = null,
+            object queryParams = null,
+            IDictionary<string, string> headers = null)
         {
-            var response = await serviceClient.SendAsync(HttpMethod.Delete, routeTemplate, segments, queryParams);
+            var response = await serviceClient.SendAsync(
+                HttpMethod.Delete,
+                routeTemplate,
+                segments,
+                queryParams, null,
+                headers);
 
             if (!response.IsSuccessStatusCode)
             {

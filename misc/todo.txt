@@ -6,3 +6,7 @@
 ==========
 +   1. Get rid of suffix 'Response' in name of prop 'ValidationErrorResponse' in class ValidationServiceClientException.cs
 
+2020-03-22
+==========
+    1. Check that you can't pass CR LF and stuff in headers of a client's request.
+

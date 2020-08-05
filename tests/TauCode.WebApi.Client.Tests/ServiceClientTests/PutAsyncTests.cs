@@ -4,7 +4,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using TauCode.WebApi.Client.Exceptions;
-using TauCode.WebApi.Client.Tests.App.Dto;
+using TauCode.WebApi.Client.Tests.AppHost.Dto;
 
 namespace TauCode.WebApi.Client.Tests.ServiceClientTests
 {
@@ -25,7 +25,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
 
             // Act
             var reversePerson = await this.ServiceClient.PutAsync<PersonDto>(
-                "put-reverse-person/{prefix}",
+                "api/put-reverse-person/{prefix}",
                 new
                 {
                     prefix
@@ -57,7 +57,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
                 await this.ServiceClient.PutAsync(
-                    "not-existing-route"));
+                    "api/not-existing-route"));
 
             // Assert
             Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
@@ -71,7 +71,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
 
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
-                await this.ServiceClient.PutAsync("put-returns-notfound"));
+                await this.ServiceClient.PutAsync("api/put-returns-notfound"));
 
             // Assert
             Assert.That(ex.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
@@ -96,7 +96,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<HttpServiceClientException>(async () =>
                 await this.ServiceClient.PutAsync(
-                    "put-returns-desired-generic-statuscode",
+                    "api/put-returns-desired-generic-statuscode",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -118,7 +118,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<BadRequestErrorServiceClientException>(async () =>
                 await this.ServiceClient.PutAsync(
-                    "put-returns-badrequest-error",
+                    "api/put-returns-badrequest-error",
                     queryParams: new
                     {
                         desiredCode,
@@ -142,7 +142,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<ConflictErrorServiceClientException>(async () =>
                 await this.ServiceClient.PutAsync(
-                    "put-returns-error",
+                    "api/put-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -167,7 +167,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<ForbiddenErrorServiceClientException>(async () =>
                 await this.ServiceClient.PutAsync(
-                    "put-returns-error",
+                    "api/put-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -192,7 +192,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<NotFoundErrorServiceClientException>(async () =>
                 await this.ServiceClient.PutAsync(
-                    "put-returns-error",
+                    "api/put-returns-error",
                     queryParams: new
                     {
                         desiredStatusCode,
@@ -216,7 +216,7 @@ namespace TauCode.WebApi.Client.Tests.ServiceClientTests
             // Act
             var ex = Assert.ThrowsAsync<ValidationErrorServiceClientException>(async () =>
                 await this.ServiceClient.PutAsync(
-                    "put-returns-validation-error",
+                    "api/put-returns-validation-error",
                     queryParams: new
                     {
                         desiredCode,

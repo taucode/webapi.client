@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using TauCode.Data;
 
 namespace TauCode.WebApi.Client
@@ -28,69 +26,27 @@ namespace TauCode.WebApi.Client
         {
             var uri = request.Route;
 
-            var querySb = new StringBuilder();
-            var added = false;
-
-            if (request.QueryParameters.Count > 0)
-            {
-                foreach (var pair in request.QueryParameters)
-                {
-                    var name = pair.Key;
-                    var value = pair.Value;
-
-                    if (value == null)
-                    {
-                        continue; // won't add nulls to query string
-                    }
-
-                    if (value is IEnumerable collection && !(value is string))
-                    {
-                        foreach (var collectionEntry in collection)
-                        {
-                            if (collectionEntry == null)
-                            {
-                                continue; // won't add nulls to query string
-                            }
-
-                            if (added)
-                            {
-                                querySb.Append("&");
-                            }
-
-                            var serializedCollectionEntry = SerializeValue(collectionEntry);
-                            var escapedCollectionEntry = HttpUtility.UrlEncode(serializedCollectionEntry);
-                            querySb.AppendFormat($"{name}={escapedCollectionEntry}");
-                            added = true;
-                        }
-                    }
-                    else
-                    {
-                        if (added)
-                        {
-                            querySb.Append("&");
-                        }
-
-                        var serializedValue = SerializeValue(value);
-                        var escapedValue = HttpUtility.UrlEncode(serializedValue);
-                        querySb.AppendFormat($"{name}={escapedValue}");
-                        added = true;
-                    }
-                }
-            }
-
-            if (added)
-            {
-                querySb.Insert(0, '?');
-            }
-
-            var finalUri = uri + querySb;
-
+            var finalUri = WebApiClientHelper.AddQueryParams(uri, request.QueryParameters);
             var message = new HttpRequestMessage(request.HttpMethod, finalUri);
 
             if (request.Body != null)
             {
-                var json = JsonConvert.SerializeObject(request.Body);
+                var json = JsonConvert.SerializeObject(request.Body, WebApiClientHelper.JsonSerializerSettings);
                 message.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            }
+
+            if (request.Headers != null)
+            {
+                foreach (var pair in request.Headers)
+                {
+                    var headerName = pair.Key;
+                    var headerValue = pair.Value;
+
+                    if (headerValue != null)
+                    {
+                        message.Headers.Add(headerName, headerValue);
+                    }
+                }
             }
 
             return this.HttpClient.SendAsync(message);
@@ -100,23 +56,23 @@ namespace TauCode.WebApi.Client
         {
             if (segments == null)
             {
-                throw new ArgumentException("Route expects 'segments' object, but it was null", nameof(segments));
+                throw new ArgumentException("Route expects 'segments' object, but it was null.", nameof(segments));
             }
 
             var name = match.Result("$1");
             var property = segments.GetType().GetProperty(name);
             if (property == null)
             {
-                throw new ArgumentException($"Property '{name}', which is required by the route, not found in 'segments' object", nameof(segments));
+                throw new ArgumentException($"Property '{name}', which is required by the route, not found in 'segments' object.", nameof(segments));
             }
 
             var value = property.GetValue(segments);
             if (value == null)
             {
-                throw new ArgumentException($"'segments' object has '{name}' value equal to 'null'", nameof(segments));
+                throw new ArgumentException($"'segments' object has '{name}' value equal to 'null'.", nameof(segments));
             }
 
-            var stringValue = JsonUtility.SerializeValue(value);
+            var stringValue = WebApiClientHelper.SerializeValueToJson(value);
             return stringValue;
         }
 
@@ -136,16 +92,6 @@ namespace TauCode.WebApi.Client
             return new ValueDictionary(queryParams);
         }
 
-        private static string SerializeValue(object value)
-        {
-            if (value is string s)
-            {
-                return s; // JSON will escape '\\' and '"', we don't want it.
-            }
-
-            return JsonUtility.SerializeValue(value);
-        }
-
         #endregion
 
         #region IServiceClient Members
@@ -157,7 +103,8 @@ namespace TauCode.WebApi.Client
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            object body = null)
+            object body = null,
+            IDictionary<string, string> headers = null)
         {
             if (method == null)
             {
@@ -174,6 +121,7 @@ namespace TauCode.WebApi.Client
                 Route = SubstituteRouteParams(routeTemplate, segments),
                 QueryParameters = BuildQueryParameters(queryParams),
                 Body = body,
+                Headers = headers,
             };
 
             var response = this.SendRequest(request);
