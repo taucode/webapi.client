@@ -6,8 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="TauCode.Data" Version="1.0.0-dev-2020-03-15-20-30" />
-    <PackageReference Include="TauCode.WebApi" Version="1.0.0-dev-2020-03-15-23-43" />
+    <PackageReference Include="TauCode.Data" Version="1.0.1" />
+    <PackageReference Include="TauCode.WebApi" Version="1.0.1" />
   </ItemGroup>
 
 </Project>
