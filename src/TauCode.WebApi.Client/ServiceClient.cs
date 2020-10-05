@@ -63,7 +63,9 @@ namespace TauCode.WebApi.Client
             var property = segments.GetType().GetProperty(name);
             if (property == null)
             {
-                throw new ArgumentException($"Property '{name}', which is required by the route, not found in 'segments' object.", nameof(segments));
+                throw new ArgumentException(
+                    $"Property '{name}', which is required by the route, not found in 'segments' object.",
+                    nameof(segments));
             }
 
             var value = property.GetValue(segments);
