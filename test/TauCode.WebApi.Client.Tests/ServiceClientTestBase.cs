@@ -8,12 +8,13 @@ namespace TauCode.WebApi.Client.Tests
     {
         protected HttpClient HttpClient;
         protected IServiceClient ServiceClient;
+        private Factory _factory;
         
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            var factory = new Factory();
-            this.HttpClient = factory.CreateClient();
+            _factory = new Factory();
+            this.HttpClient = _factory.CreateClient();
             this.ServiceClient = new ServiceClient(HttpClient);
         }
 
@@ -21,6 +22,7 @@ namespace TauCode.WebApi.Client.Tests
         public void SetUp()
         {
             this.HttpClient.Dispose();
+            _factory.Dispose();
         }
     }
 }
