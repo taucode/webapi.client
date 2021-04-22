@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using TauCode.WebApi.Client.Exceptions;
 
@@ -96,16 +97,24 @@ namespace TauCode.WebApi.Client
             return valueArray.Length == 1 ? valueArray[0] : null;
         }
 
-        private static async Task Send(
+        private static async Task SendAsyncAndHandleResponse(
             this IServiceClient serviceClient,
             HttpMethod method,
             string routeTemplate,
             object segments,
             object queryParams,
             object body,
-            IDictionary<string, string> headers)
+            IDictionary<string, string> headers,
+            CancellationToken cancellationToken)
         {
-            var response = await serviceClient.SendAsync(method, routeTemplate, segments, queryParams, body, headers);
+            var response = await serviceClient.SendAsync(
+                method,
+                routeTemplate,
+                segments,
+                queryParams,
+                body,
+                headers,
+                cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -114,16 +123,24 @@ namespace TauCode.WebApi.Client
             }
         }
 
-        private static async Task<TResult> Send<TResult>(
+        private static async Task<TResult> SendAsyncAndHandleResponse<TResult>(
             this IServiceClient serviceClient,
             HttpMethod method,
             string routeTemplate,
             object segments,
             object queryParams,
             object body,
-            IDictionary<string, string> headers)
+            IDictionary<string, string> headers,
+            CancellationToken cancellationToken)
         {
-            var response = await serviceClient.SendAsync(method, routeTemplate, segments, queryParams, body, headers);
+            var response = await serviceClient.SendAsync(
+                method,
+                routeTemplate,
+                segments,
+                queryParams,
+                body,
+                headers,
+                cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -153,14 +170,16 @@ namespace TauCode.WebApi.Client
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            IDictionary<string, string> headers = null) =>
-            serviceClient.Send<TResult>(
+            IDictionary<string, string> headers = null,
+            CancellationToken cancellationToken = default) =>
+            serviceClient.SendAsyncAndHandleResponse<TResult>(
                 HttpMethod.Get,
                 routeTemplate,
                 segments,
                 queryParams,
                 null,
-                headers);
+                headers,
+                cancellationToken);
 
         public static Task PostAsync(
             this IServiceClient serviceClient,
@@ -168,14 +187,16 @@ namespace TauCode.WebApi.Client
             object segments = null,
             object queryParams = null,
             object body = null,
-            IDictionary<string, string> headers = null) =>
-            serviceClient.Send(
+            IDictionary<string, string> headers = null,
+            CancellationToken cancellationToken = default) =>
+            serviceClient.SendAsyncAndHandleResponse(
                 HttpMethod.Post,
                 routeTemplate,
                 segments,
                 queryParams,
                 body,
-                headers);
+                headers,
+                cancellationToken);
 
         public static Task<TResult> PostAsync<TResult>(
             this IServiceClient serviceClient,
@@ -183,14 +204,16 @@ namespace TauCode.WebApi.Client
             object segments = null,
             object queryParams = null,
             object body = null,
-            IDictionary<string, string> headers = null) =>
-            serviceClient.Send<TResult>(
+            IDictionary<string, string> headers = null,
+            CancellationToken cancellationToken = default) =>
+            serviceClient.SendAsyncAndHandleResponse<TResult>(
                 HttpMethod.Post,
                 routeTemplate,
                 segments,
                 queryParams,
                 body,
-                headers);
+                headers,
+                cancellationToken);
 
         public static Task PutAsync(
             this IServiceClient serviceClient,
@@ -198,14 +221,16 @@ namespace TauCode.WebApi.Client
             object segments = null,
             object queryParams = null,
             object body = null,
-            IDictionary<string, string> headers = null) =>
-            serviceClient.Send(
+            IDictionary<string, string> headers = null,
+            CancellationToken cancellationToken = default) =>
+            serviceClient.SendAsyncAndHandleResponse(
                 HttpMethod.Put,
                 routeTemplate,
                 segments,
                 queryParams,
                 body,
-                headers);
+                headers,
+                cancellationToken);
 
         public static Task<TResult> PutAsync<TResult>(
             this IServiceClient serviceClient,
@@ -213,56 +238,64 @@ namespace TauCode.WebApi.Client
             object segments = null,
             object queryParams = null,
             object body = null,
-            IDictionary<string, string> headers = null) =>
-            serviceClient.Send<TResult>(
+            IDictionary<string, string> headers = null,
+            CancellationToken cancellationToken = default) =>
+            serviceClient.SendAsyncAndHandleResponse<TResult>(
                 HttpMethod.Put,
                 routeTemplate,
                 segments,
                 queryParams,
                 body,
-                headers);
+                headers,
+                cancellationToken);
 
         public static Task DeleteAsync(
             this IServiceClient serviceClient,
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            IDictionary<string, string> headers = null) =>
-            serviceClient.Send(
+            IDictionary<string, string> headers = null,
+            CancellationToken cancellationToken = default) =>
+            serviceClient.SendAsyncAndHandleResponse(
                 HttpMethod.Delete,
                 routeTemplate,
                 segments,
                 queryParams,
                 null,
-                headers);
+                headers,
+                cancellationToken);
 
         public static Task<TResult> DeleteAsync<TResult>(
             this IServiceClient serviceClient,
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            IDictionary<string, string> headers = null) =>
-            serviceClient.Send<TResult>(
+            IDictionary<string, string> headers = null,
+            CancellationToken cancellationToken = default) =>
+            serviceClient.SendAsyncAndHandleResponse<TResult>(
                 HttpMethod.Delete,
                 routeTemplate,
                 segments,
                 queryParams,
                 null,
-                headers);
+                headers,
+                cancellationToken);
 
         public static async Task<string> DeleteAndReturnIdAsync(
             this IServiceClient serviceClient,
             string routeTemplate,
             object segments = null,
             object queryParams = null,
-            IDictionary<string, string> headers = null)
+            IDictionary<string, string> headers = null,
+            CancellationToken cancellationToken = default)
         {
             var response = await serviceClient.SendAsync(
                 HttpMethod.Delete,
                 routeTemplate,
                 segments,
                 queryParams, null,
-                headers);
+                headers,
+                cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {

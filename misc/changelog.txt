@@ -34,3 +34,7 @@
 2021-03-12
 ==========
     1. Updated refs.
+
+2021-04-22
+==========
+    1. Added cancellation tokens for async methods.

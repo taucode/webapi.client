@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using TauCode.Data;
 
@@ -22,7 +23,7 @@ namespace TauCode.WebApi.Client
 
         #region Private
 
-        private Task<HttpResponseMessage> SendRequest(ServiceRequest request)
+        private Task<HttpResponseMessage> SendRequest(ServiceRequest request, CancellationToken cancellationToken)
         {
             var uri = request.Route;
 
@@ -49,7 +50,7 @@ namespace TauCode.WebApi.Client
                 }
             }
 
-            return this.HttpClient.SendAsync(message);
+            return this.HttpClient.SendAsync(message, cancellationToken);
         }
 
         private static string EvaluateSegmentMatch(Match match, object segments)
@@ -98,15 +99,16 @@ namespace TauCode.WebApi.Client
 
         #region IServiceClient Members
 
-        public HttpClient HttpClient { get; private set; }
+        public HttpClient HttpClient { get; }
 
         public Task<HttpResponseMessage> SendAsync(
             HttpMethod method,
             string routeTemplate,
-            object segments = null,
-            object queryParams = null,
-            object body = null,
-            IDictionary<string, string> headers = null)
+            object segments,
+            object queryParams,
+            object body,
+            IDictionary<string, string> headers,
+            CancellationToken cancellationToken)
         {
             if (method == null)
             {
@@ -126,7 +128,7 @@ namespace TauCode.WebApi.Client
                 Headers = headers,
             };
 
-            var response = this.SendRequest(request);
+            var response = this.SendRequest(request, cancellationToken);
             return response;
         }
 
