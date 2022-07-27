@@ -10,3 +10,7 @@
 ==========
     1. Check that you can't pass CR LF and stuff in headers of a client's request.
 
+2021-05-20
+==========
+    1. Cache routes: http://foo/{fooId}/items - don't want to Regex this every time.
+
