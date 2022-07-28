@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TauCode.WebApi.Client
@@ -14,6 +15,7 @@ namespace TauCode.WebApi.Client
             object segments = null,
             object queryParams = null,
             object body = null,
-            IDictionary<string, string> headers = null);
+            IDictionary<string, string> headers = null,
+            CancellationToken cancellation = default);
     }
 }

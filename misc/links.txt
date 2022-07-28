@@ -1,0 +1,3 @@
+2022-06-03
+==========
+    1. https://stackoverflow.com/questions/29992848/parse-and-modify-a-query-string-in-net-core
