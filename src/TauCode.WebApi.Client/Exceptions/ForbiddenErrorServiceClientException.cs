@@ -1,14 +1,12 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 
-namespace TauCode.WebApi.Client.Exceptions
+namespace TauCode.WebApi.Client.Exceptions;
+
+[Serializable]
+public class ForbiddenErrorServiceClientException : ErrorServiceClientException
 {
-    [Serializable]
-    public class ForbiddenErrorServiceClientException : ErrorServiceClientException
+    public ForbiddenErrorServiceClientException(string code, string message)
+        : base(HttpStatusCode.Forbidden, code, message)
     {
-        public ForbiddenErrorServiceClientException(string code, string message)
-            : base(HttpStatusCode.Forbidden, code, message)
-        {
-        }
     }
 }

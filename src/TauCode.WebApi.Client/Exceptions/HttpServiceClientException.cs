@@ -1,17 +1,15 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 
-namespace TauCode.WebApi.Client.Exceptions
+namespace TauCode.WebApi.Client.Exceptions;
+
+[Serializable]
+public class HttpServiceClientException : ServiceClientException
 {
-    [Serializable]
-    public class HttpServiceClientException : ServiceClientException
+    public HttpServiceClientException(HttpStatusCode statusCode, string message)
+        : base(message)
     {
-        public HttpServiceClientException(HttpStatusCode statusCode, string message)
-            : base(message)
-        {
-            this.StatusCode = statusCode;
-        }
-
-        public HttpStatusCode StatusCode { get; }
+        this.StatusCode = statusCode;
     }
+
+    public HttpStatusCode StatusCode { get; }
 }
