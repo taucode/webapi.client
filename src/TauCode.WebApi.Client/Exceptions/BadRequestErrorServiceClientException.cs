@@ -1,14 +1,12 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 
-namespace TauCode.WebApi.Client.Exceptions
+namespace TauCode.WebApi.Client.Exceptions;
+
+[Serializable]
+public class BadRequestErrorServiceClientException : ErrorServiceClientException
 {
-    [Serializable]
-    public class BadRequestErrorServiceClientException : ErrorServiceClientException
+    public BadRequestErrorServiceClientException(string code, string message)
+        : base(HttpStatusCode.BadRequest, code, message)
     {
-        public BadRequestErrorServiceClientException(string code, string message)
-            : base(HttpStatusCode.BadRequest, code, message)
-        {
-        }
     }
 }

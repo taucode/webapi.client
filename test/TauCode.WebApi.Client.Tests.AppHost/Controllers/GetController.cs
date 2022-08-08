@@ -1,162 +1,159 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Net;
 using TauCode.WebApi.Client.Tests.AppHost.Dto;
 
-namespace TauCode.WebApi.Client.Tests.AppHost.Controllers
+namespace TauCode.WebApi.Client.Tests.AppHost.Controllers;
+
+[ApiController]
+public class GetController : ControllerBase
 {
-    [ApiController]
-    public class GetController : ControllerBase
+    [HttpGet]
+    [Route("api/get-from-route/{name}/{salary}/{bornAt}")]
+    public IActionResult GetFromRoute(
+        [FromRoute] string name,
+        [FromRoute] decimal salary,
+        [FromRoute] DateTime bornAt)
     {
-        [HttpGet]
-        [Route("api/get-from-route/{name}/{salary}/{bornAt}")]
-        public IActionResult GetFromRoute(
-            [FromRoute]string name,
-            [FromRoute]decimal salary,
-            [FromRoute]DateTime bornAt)
+        var person = new PersonDto
         {
-            var person = new PersonDto
-            {
-                Name = name,
-                Salary = salary,
-                BornAt = bornAt,
-            };
+            Name = name,
+            Salary = salary,
+            BornAt = bornAt,
+        };
 
-            return this.Ok(person);
-        }
+        return this.Ok(person);
+    }
 
-        [HttpGet]
-        [Route("api/get-returns-notfound")]
-        public IActionResult GetReturnsNotFound()
+    [HttpGet]
+    [Route("api/get-returns-notfound")]
+    public IActionResult GetReturnsNotFound()
+    {
+        return this.NotFound(new
         {
-            return this.NotFound(new
-            {
-                firstProp = "first-prop",
-                secondProp = "second-prop"
-            });
-        }
+            firstProp = "first-prop",
+            secondProp = "second-prop"
+        });
+    }
 
-        [HttpGet]
-        [Route("api/get-returns-desired-generic-statuscode")]
-        public IActionResult GetReturnsDesiredGenericStatusCode(
-            [FromQuery] HttpStatusCode desiredStatusCode,
-            [FromQuery] string desiredContent)
+    [HttpGet]
+    [Route("api/get-returns-desired-generic-statuscode")]
+    public IActionResult GetReturnsDesiredGenericStatusCode(
+        [FromQuery] HttpStatusCode desiredStatusCode,
+        [FromQuery] string desiredContent)
+    {
+        return new ContentResult
         {
-            return new ContentResult
-            {
-                StatusCode = (int)desiredStatusCode,
-                Content = desiredContent,
-            };
-        }
+            StatusCode = (int)desiredStatusCode,
+            Content = desiredContent,
+        };
+    }
 
-        [HttpGet]
-        [Route("api/get-returns-notfound-error")]
-        public IActionResult GetReturnsNotFoundError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
+    [HttpGet]
+    [Route("api/get-returns-notfound-error")]
+    public IActionResult GetReturnsNotFoundError([FromQuery] string desiredCode, [FromQuery] string desiredMessage)
+    {
+        this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
+
+        return this.NotFound(new ErrorDto
         {
-            this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
+            Code = desiredCode,
+            Message = desiredMessage,
+        });
+    }
 
-            return this.NotFound(new ErrorDto
-            {
-                Code = desiredCode,
-                Message = desiredMessage,
-            });
-        }
+    [HttpGet]
+    [Route("api/get-returns-badrequest-error")]
+    public IActionResult GetReturnsBadRequestError([FromQuery] string desiredCode, [FromQuery] string desiredMessage)
+    {
+        this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
 
-        [HttpGet]
-        [Route("api/get-returns-badrequest-error")]
-        public IActionResult GetReturnsBadRequestError([FromQuery]string desiredCode, [FromQuery]string desiredMessage)
+        return this.BadRequest(new ErrorDto
         {
-            this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
+            Code = desiredCode,
+            Message = desiredMessage,
+        });
+    }
 
-            return this.BadRequest(new ErrorDto
-            {
-                Code = desiredCode,
-                Message = desiredMessage,
-            });
-        }
+    [HttpGet]
+    [Route("api/get-returns-error")]
+    public IActionResult GetReturnsError(
+        [FromQuery] HttpStatusCode desiredStatusCode,
+        [FromQuery] string desiredCode,
+        [FromQuery] string desiredMessage)
+    {
+        this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
 
-        [HttpGet]
-        [Route("api/get-returns-error")]
-        public IActionResult GetReturnsError(
-            [FromQuery]HttpStatusCode desiredStatusCode,
-            [FromQuery]string desiredCode,
-            [FromQuery]string desiredMessage)
+        var error = new ErrorDto
         {
-            this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ErrorPayloadType);
+            Code = desiredCode,
+            Message = desiredMessage,
+        };
 
-            var error = new ErrorDto
-            {
-                Code = desiredCode,
-                Message = desiredMessage,
-            };
+        var json = JsonConvert.SerializeObject(error);
 
-            var json = JsonConvert.SerializeObject(error);
-
-            return new ContentResult
-            {
-                StatusCode = (int)desiredStatusCode,
-                Content = json,
-                ContentType = "application/json",
-            };
-        }
-
-        [HttpGet]
-        [Route("api/get-returns-validation-error")]
-        public IActionResult GetReturnsValidationError(
-            [FromQuery]string desiredCode,
-            [FromQuery]string desiredMessage)
+        return new ContentResult
         {
-            this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ValidationErrorPayloadType);
+            StatusCode = (int)desiredStatusCode,
+            Content = json,
+            ContentType = "application/json",
+        };
+    }
 
-            var validationError = new ValidationErrorDto
+    [HttpGet]
+    [Route("api/get-returns-validation-error")]
+    public IActionResult GetReturnsValidationError(
+        [FromQuery] string desiredCode,
+        [FromQuery] string desiredMessage)
+    {
+        this.Response.Headers.Add(DtoHelper.PayloadTypeHeaderName, DtoHelper.ValidationErrorPayloadType);
+
+        var validationError = new ValidationErrorDto
+        {
+            Code = desiredCode,
+            Message = desiredMessage,
+            Failures = new Dictionary<string, ValidationFailureDto>
             {
-                Code = desiredCode,
-                Message = desiredMessage,
-                Failures = new Dictionary<string, ValidationFailureDto>
                 {
+                    "name",
+                    new ValidationFailureDto
                     {
-                        "name",
-                        new ValidationFailureDto
-                        {
-                            Code = "NameValidator",
-                            Message = "Name is bad."
-                        }
-                    },
-                    {
-                        "salary",
-                        new ValidationFailureDto
-                        {
-                            Code = "SalaryValidator",
-                            Message = "Salary is low.",
-                        }
+                        Code = "NameValidator",
+                        Message = "Name is bad."
                     }
                 },
-            };
+                {
+                    "salary",
+                    new ValidationFailureDto
+                    {
+                        Code = "SalaryValidator",
+                        Message = "Salary is low.",
+                    }
+                }
+            },
+        };
 
-            var json = JsonConvert.SerializeObject(validationError);
+        var json = JsonConvert.SerializeObject(validationError);
 
-            return new ContentResult
-            {
-                StatusCode = (int)HttpStatusCode.BadRequest,
-                Content = json,
-                ContentType = "application/json",
-            };
-        }
-
-        [HttpGet]
-        [Route("api/get-returns-bad-json")]
-        public IActionResult GetReturnsBadJson()
+        return new ContentResult
         {
-            var badJson = "<bad_json>";
+            StatusCode = (int)HttpStatusCode.BadRequest,
+            Content = json,
+            ContentType = "application/json",
+        };
+    }
 
-            return new ContentResult
-            {
-                StatusCode = (int)HttpStatusCode.OK,
-                Content = badJson,
-                ContentType = "application/json",
-            };
-        }
+    [HttpGet]
+    [Route("api/get-returns-bad-json")]
+    public IActionResult GetReturnsBadJson()
+    {
+        var badJson = "<bad_json>";
+
+        return new ContentResult
+        {
+            StatusCode = (int)HttpStatusCode.OK,
+            Content = badJson,
+            ContentType = "application/json",
+        };
     }
 }
