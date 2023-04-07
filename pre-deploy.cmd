@@ -1,9 +1,9 @@
 dotnet restore
 
-dotnet build --configuration Debug
-dotnet build --configuration Release
+dotnet build TauCode.WebApi.Client.sln -c Debug
+dotnet build TauCode.WebApi.Client.sln -c Release
 
-dotnet test -c Debug .\test\TauCode.WebApi.Client.Tests\TauCode.WebApi.Client.Tests.csproj
-dotnet test -c Release .\test\TauCode.WebApi.Client.Tests\TauCode.WebApi.Client.Tests.csproj
+dotnet test TauCode.WebApi.Client.sln -c Debug
+dotnet test TauCode.WebApi.Client.sln -c Release
 
 nuget pack nuget\TauCode.WebApi.Client.nuspec
