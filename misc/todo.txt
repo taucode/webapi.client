@@ -1,16 +1,20 @@
-2019-08-15
+2023-05-05
 ==========
-+   1. Get rid of comments in ServiceClientExtensions.cs
+    1. Fix order of todos and changelog
 
-2019-09-01
+2021-05-20
 ==========
-+   1. Get rid of suffix 'Response' in name of prop 'ValidationErrorResponse' in class ValidationServiceClientException.cs
+    1. Cache routes: http://foo/{fooId}/items - don't want to Regex this every time.
 
 2020-03-22
 ==========
     1. Check that you can't pass CR LF and stuff in headers of a client's request.
 
-2021-05-20
+2019-09-01
 ==========
-    1. Cache routes: http://foo/{fooId}/items - don't want to Regex this every time.
++   1. Get rid of suffix 'Response' in name of prop 'ValidationErrorResponse' in class ValidationServiceClientException.cs
+
+2019-08-15
+==========
++   1. Get rid of comments in ServiceClientExtensions.cs
 
